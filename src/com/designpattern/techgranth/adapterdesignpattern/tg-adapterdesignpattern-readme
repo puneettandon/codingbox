@@ -1,0 +1,20 @@
+TG AdapterDesignPattern
+
+Requirements
+
+-> Should be able to play music/video
+-> Must support some default formats
+-> Player must be extensible to support new formats in future
+-> Adding new format should not have an impact on existing format
+
+
+Adapter Design Pattern
+
+-> Converts one interface to another
+-> Helps in coupling 2 class of incompatible interface
+-> Example Old Desktop screen supports only VGA
+            New Laptop supports only HDMI
+            To connect both screen we need adapter(cable/connect/USB) to connect each other
+
+
+
