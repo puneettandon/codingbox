@@ -1,0 +1,23 @@
+Airbnb Booking.com Readme
+
+Functional Requirements
+
+    -> Hotel                      --> User                                         --> Analytics
+          1. OnBoarding                 1. Search
+             of hotels                     property in particular location
+          2. Updates                    2. Book
+             their properties
+          3. Booking                    3. Check Bookings
+              Check bookings
+              and insight of revenues
+
+Non-Functional Requirements
+
+    Mostly from user point of view
+    -> Low Latency
+    -> High Availability
+    -> High Consistency
+    -> Scale
+           500K Hotels
+           10million rooms
+           1000 Rooms/Hotel  (Max 7500)
