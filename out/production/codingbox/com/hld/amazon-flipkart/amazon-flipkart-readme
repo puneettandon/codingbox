@@ -1,0 +1,24 @@
+Amazon Flipkart High Level Design
+
+Functional Requirements -
+    1. People should be able to search for whatever product they want to buy
+    2. We should able to tell them whether we can deliver it or not (At the page of search itself)
+       And If you are delivering then when should we able to deliver it to you
+    3. Should be concept of cart/wishlist
+    4. Check out making payment and completing the order
+    5. View Historical Orders
+
+Non Functional Requirements
+
+    1. Low Latency
+    2. High Availability
+    3. High Consistency
+
+
+ -->Some of the components which are dealing with the payment and inventory counting, they need to be
+    highly consistent at the cost of availability
+    Components like search they need to be highly available , may be at cost of consistency at times.
+    And overall most of the user facing components should have a low latency
+
+
+

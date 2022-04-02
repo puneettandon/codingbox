@@ -14,6 +14,7 @@ public class VehicleReservation {
     private ReservationStatus reservationStatus;
     private LocalDateTime fromDate;
     private LocalDateTime dueDate;
+    private LocalDateTime toDate;
     private LocalDateTime returnDate;
     private Address pickupLocation;
     private Address dropLocation;
@@ -160,5 +161,13 @@ public class VehicleReservation {
 
     public void setVehicleReservationType(VehicleReservationType vehicleReservationType) {
         this.vehicleReservationType = vehicleReservationType;
+    }
+
+    public LocalDateTime getToDate() {
+        return toDate;
+    }
+
+    public void setToDate(LocalDateTime toDate) {
+        this.toDate = toDate;
     }
 }

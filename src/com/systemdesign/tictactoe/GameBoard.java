@@ -29,6 +29,7 @@ public class GameBoard {
                 if(i%2 != 0 && j%2 != 0) board[i][j] = '+';
             }
         }
+        //
     }
 
     private void printBoard(){

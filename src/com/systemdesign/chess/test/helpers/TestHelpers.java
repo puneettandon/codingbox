@@ -31,7 +31,8 @@ public class TestHelpers {
             allPieces.add(pawn);
         }
 
-        Piece king = king(color);
+       // Piece king = king(color);
+        return null;
 
     }
 

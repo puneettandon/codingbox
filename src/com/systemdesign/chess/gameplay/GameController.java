@@ -14,8 +14,8 @@ public class GameController {
         while (true) {
             Player player = players.get(currentPlayer);
             PlayerMove playerMove = player.makeMove();
-            playerMove.getPiece().move(player,playerMove.getToCell(),board,defaultAdditionalBlockers());
-            currentPlayer = (currentPlayer + 1) % players.size();
+        //    playerMove.getPiece().move(player,playerMove.getToCell(),board,defaultAdditionalBlockers());
+       //     currentPlayer = (currentPlayer + 1) % players.size();
         }
 
     }
