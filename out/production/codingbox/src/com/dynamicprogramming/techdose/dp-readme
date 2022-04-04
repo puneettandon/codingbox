@@ -1,0 +1,44 @@
+Dynamic Programming
+
+Dynamic Programming is optimization over plain recursion
+
+Example Fibonacci Number
+    f(i) = f(i-1) + f(i-2)
+    f(4) = f(3) + f(2)
+    f(2) = f(1) + f(0)
+    f(0) = 0 , f(1) = 1
+
+    can use array to store results instead of recursion which increase time complexity and cpu time.
+
+
+    Conditions to apply for Dynamic Programming -
+
+       1. Problem can be divided into n sub problems . If you can solve each sub problem then your problem can be solved.
+          You can use the result of each sub problem to solve final problem.
+       2. Many of the sub problems are repeating . So don't need to solve again
+
+
+----------------------------------------------
+
+    Types of DP
+
+    1. Knapsack
+        i) 0 - 1
+        ii) Bounded
+        iii) Unbounded
+
+    2. LCS (Longest Common Subsequence)
+    3. LIS (Longest Increasing Subsequence)
+    4. Matrix Chain Multiplication
+    5. DP on grid
+    6. Kadane's Algorithm
+    7. others
+
+
+    Advanced DP
+
+    1. DP Kth - Lexicographical String
+    2. DP on tree
+    3. DP + Bit masking
+    4. DP + Bit/Segment Tree
+    5. DP + Convex Hull
