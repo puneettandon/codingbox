@@ -145,4 +145,96 @@
         
     4. #### Search Consumer
      
-              
+
+    
+ - ####Services to User facing products
+    - #####Check User Facing architecture for more details
+    - Users are the people who are consuming content on our platform.So one of the very first 
+      interactions that we have with the user is when they try to log in .And this login could 
+      happen from a bunch of clients -  mobile application, browser, smart TV etc. 
+    - But we will assume of those are coming through this one product called User Device Login 
+    which  talks to user service internally for authentication.
+    - Now the responsibility of the user service is to be the source of truth for all user related
+    information.
+   - This  user service sits on top of a MySQL database which has all the information of the user
+    like name , email id , contact information ,country , their interest  and all.
+     I could also have information about subscriptions if we have subscription based model.
+   - Now it uses a Redis as a cache.Now what will happen is - a lot of times  a lot of other 
+    services in the ecosystem will call user service to get the information about a particular user.
+   - User Service could potentially call MySQL all the time for all the requests, but that's not 
+    efficient.So Cache the user information where key will be user_id and value will be 
+    payload of the user information.
+   - When this will happen, a search service would call a user service to get user information 
+    so that they can filter out certain results.So some search result would have age restrictions, 
+    or  some search result would be applicable in only certain countries.
+    So for all that information user service will become a source of truth.
+   - Each time person tries to log in, we would want to store some information about the device , and 
+    the geography that the person has come in from and we would be sending it to kafka for analytics
+   - What kind of analytics can happen? 
+   -  More than 40% of netflix users share credentials with other people.If we are building 
+    subscription based model, we would probably do not want that to happen.But before 
+      figuring out that it should happen or not , we need to figure out that it is happening.
+   - And how could we figured it out -that if the same account is being logged in from a lot of devices
+     and from different geographies,it probably means that either the person is traveling a lot or,
+     credentials are shared with other.
+   - Similarly, there could be an other kind of user profiling that could be done on top of this data.
+    And this data will come through device finger printing via user service all the way to kafka.
+   - Then analytics could be done on that data.
+    
+   - Home Screen - On home screen they should be able to search something.That is powered
+    by Home Page Service and Search Service.
+     Home Page Service is the one that gives out the data that would render as soon as 
+     person has logged in - which is the first screen it sees.
+   - Searching would be powered by search service.
+   - Basis the result of these two services, we would probably want to do some analytics on top of it.
+   - Let's say in youtube ,we see some categories.And video within those categories.
+     and let's say, if our analytics say that a lot of people are actually going on that more videos
+     and are not clicking on the one that are showing on home page.
+   - That means there is something wrong on home page service and it is not returning the best
+    possible result to the user and that needs some improvement.The same thing could be 
+     said above search service.
+   - This user activity Analytics Service which gets feeds from various actions done by users
+     on the app or website or any client and it sends to the kafka and basis that , there 
+     could be some kind of analytics that we could do , which will then be used to improve 
+     the search results and the recommendation engine.
+   - Let's just say person has done some search and they have got to a video and then they want 
+    to play on it. So what they would do ? They would probably click on that  ,get to screen , 
+     click on play button. and they expect screen to start playing.
+   - User Device Playing Video - It basically make call to load balancer , to this host identity 
+    service . Video from production house will be uploaded to a lot of CDNs.
+   - For example - let's just say that we uploaded it into CDN in US and Germany.All of that 
+    information about a video, and it's CDN, all of that lies within cassandra cluster 
+     on which this Asset Service(discussed in previous section) sits.
+   - This host identity service , it knows what video you want to play and where you are 
+    coming from. It will query asset service to get me all the CDNs that are available 
+     with this video and given the location of user and location of all the videos that are there,
+     it will try to come up with one of the CDNs that is responsible to play this particular video.
+     That's the main responsibility of this Host Identity service.
+   - This service could return 2 types of CDNs. One -> main CDN which is basically repository 
+    of all the videos that we have. There is another CDN we have , which is CDN optimized for 
+     local views for a lack of better word.But it is basically a CDN, which is geography centric.
+   - Suppose user from US requesting the video, he will be redirected to main CDN itself(which is in US).
+    but let's say if user is from India.Normally Germany CDN is close by they would get
+     the CDN of germany to talk to.  But for some reason we have enough analytics and we get to know 
+     that people in India are watching a particular video a lot.we could host a CDN service in India
+     and upload that video in that CDN.
+   - Now all the users asking for that particular video from India would be given local CDN to talk to.
+    because that help us save a lot of network traffic. Closer to server faster the response.
+   - Now as client is playing a particular video , there are a lot of information that we can 
+    capture about this interaction of a person viewing the video.
+   -  One thing is - How good is video? Most of us don't really rate a video usually.Thumbs only 
+    if it is too bad or too good.But capturing a rating about particular video is very important thing for a video. That can be used to improve search.  
+   - Other thing is -    what length have people watched a video for.So, if a lot of people are closing 
+    video in 10,20,30 seconds ,it's probably not that good.But if a lot of people are watching 
+     more than 90% of video , they are kind of giving signal it is good video.
+   - These kind of analytics can be done basis how people are watching the video.
+    and All of that is done by Stream Stats Logger service, which basically gets ping 
+     once in a while that person has watched this video till this point of time., and that again
+     pushed to kafka.
+   - And again can be used to do some analytics mainly to come up with a rating for a particular 
+    video.
+     
+
+
+     
+
