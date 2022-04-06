@@ -234,6 +234,12 @@
    - And again can be used to do some analytics mainly to come up with a rating for a particular 
     video.
      
+     
+
+ - ####Remaining piece of Architecture
+
+    - 
+
 
 
      
