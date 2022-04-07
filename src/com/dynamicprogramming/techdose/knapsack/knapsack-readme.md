@@ -72,5 +72,43 @@ profit  ---> 5  6  4
 
 Rate ->    5/3(1.67)   6/4(1.5)   4/2(2)
 
+Bag -> 6
+
+Pick wt -> 2 then wt -> 3 then 1 kg from wt -> 4
+
+Max profit  -> 4 + 5 + 1.5 = 10.5 
+This greedy (fractional)
+
+If we solve by DP -  0/1
+then    6 + 4 = 10
+
+
+Note: Integer knapsack means we can't include fractional items.
+0/1 kp is a subset of Integer Knapsack.
+
+
+#### Bounded & Unbounded Knapsack 
+
+In a bounded knapsack, each item can be included 0 or more times upto a limit.
+Unbounded knapsack has no such limit.
+
+0 <= x <= l   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;    x > 0
+
+Bounded KP &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Unbounded Kp
+
+Note: KP are generally of mixed types.
+
+example: Integer + Bounded => Fractional items not allowed + limit 
+on no. of instances per item.
+
+Integer + Unbounded etc 
+
+
+#### Some knapsack variations
+1) Subset sum problem
+2) Partition equal subset sum
+3) Count of subsets with sum = x
+4) Partition a set into 2 subsets such that difference of subset sum is minimum
+5) Target sum
 
 
