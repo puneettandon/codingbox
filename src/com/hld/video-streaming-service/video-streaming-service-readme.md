@@ -236,9 +236,113 @@
      
      
 
- - ####Remaining piece of Architecture
+ - ####A remaining piece of Architecture
 
-    - 
+    - In previous two sections, we had put in a lot of events into kafka of various types.
+    How each of those events is helping us and what information can we extract 
+      out of it and how it will help us to enhance the whole system.
+    - One of the events that Asset Service publishes is the on-boarding of new video.
+    Means the video is ready for consumers to see it.And how would consumers 
+      would see it?Only when it pops up either in their home page or search results.
+    - So we need to make this video available for searches , so that the event that was 
+    pushed to kafka would have a lot of information about the whole movie like 
+      cast, crew, description and some attributes.
+    - So there will search consumer service which will be listening to topic 
+    where that event was published.It will pick up that event, it will convert 
+      that event in the format that it wants to. So think of it like it can discard 
+      some of the fields, it can create some of the new fields also. 
+    - So let's say if it has a particular tag, which might mean that we need to do 
+    an age filter, it might add flag into that json saying I want to do age filtering.
+      And post all of the data massaging that it will put it its data store.
+    - We are using elastic search here. why elasticsearch ? Mainly because we need 
+    to do fuzzy search here.(that will be taken care by ES)
+    - On the otherside, when a user is actually trying to search for movie, 
+    he will come to home screen, search for something in searchbox, it comes 
+      through this Load balancer to search service. The schema is shared between
+      search service and search consumer. So both of them understands what data is 
+      within ES and how it is maintained.
+    - Let's say Search Service gets some response from ES and it gets to know that 
+    there is a particular flag which says that I need to do an age level filtering on the user
+      who's searching for, it will query user service and get the information of the 
+      particular user. and basis the information it gets from user service , it might 
+      choose to show that result or ignore that result.
+     - At the end of it after doing this whole data massaging , it can respond back to the 
+    UI with search results.
+     - All the components are horizontally scalable.If there is traffic increasing 
+    in any of the component, we just need to increase the number of machines into that 
+       particular service or that particular data store.
+    - Content Processor - It has a component called Content Tagger.All the chunks 
+    went through Content Tagger and it had the logic of parsing the whole video and 
+      extracting some tags out of it.
+    - Now let's say just there are thousands of chunks which are individually being 
+    processed and all of those information about tags in each chunk is being put to kafka.
+    -  Now let's try to understand how would that get aggregated and how would that be stored back again.
+    Assuming that information again comes to kafka. There will be spark streaming cluster 
+       running which will be listening on to the topic where all the tags related 
+       information is being passed through.That information would have movie_id, 
+       tag_name and chunk_id and some additional information like how many chunks are there
+       so that it is able to identify that everything is processed.
+     - Now what spark streaming cluster  will do is - it will keep polling  all of the 
+    information and may be it will look at previous one hour of data or half an hour data
+       or some time frame and do a simple reduce by key where a key could be 
+       your movie_id.What essentially it does is, think of it in the SQL world as 
+       something like Group by movie_id and count(tag) and group by tag as well.
+      so it gets to know that for a movie, what all tags were present and how many times each
+       tag came in.And then it could do Order By Count(*) and Select Top 10 or Top 5 
+       or something of that sort . So this cluster , just in itself , should be 
+       good enough to identify that - given a movie and all the events about all the chunks 
+       and their tags , which are top 5 or top 10 in that movie.
+       It could send back the same information to kafka, which could then be read by Asset Service 
+       which could then be persisted back in the Cassandra data store that it uses.
+     - Why using Cassandra ?   Cassandra is a database that handles massive amounts of read and writes 
+    and that is the way it is being designed.Cassandra follows no master kind of strategy.
+       so it has a ring of lot of nodes where in each node stores some part of data
+       and each node knows that what particular data is residing in which node.
+       Now assuming that kind of structure , if we want to handle more amount of data , all 
+       we need to do is to add more nodes in cassandra cluster and it should be able to 
+       handle more data.
+     - What is the volume of data we have ? By some metrics , Youtube for example - 
+    has bit of more than a billion videos.In our case , we have not only videos, 
+       but also information about chunks.Cassandra should be able to handle that .
+     - Good and bad about cassandra - Good when you have small number of queries 
+    and query is by something called partition key.If we store the data in a format 
+       where this key is the partition key then these are very efficient queries 
+       in world of cassasndra. 
+       Bad at when you want to do random queries.so if you want to do LIKE  search 
+       in description or if you want to search by a crew name , or any random thing 
+      - We are not using cassandra for those kind of searches.Those searches are 
+    powered by search service which sits on top of elastic search .  Cassandra is 
+        bad at aggregation. For that we have hadoop cluster.
+      - Content Tagger part of workflow engine - other than tagging it was creating 
+    thumbnail of images , one of them will possibly be chosen as best thumbnail.
+        So, how does that work out?
+      - Assuming all of those information again comes to kafka saying for a
+    movie_id, a lot of thumbnails will be generated . They will be generated for 
+        individual pieces and then that could be aggregated.
+      - Asssuming of that information comes to this spark cluster and then it gets
+    stored into hadoop cluster. 
+      - When search results are shown to the user , randomly some of the thumbnails 
+    would be shown to the users.
+      - We had home screen service, search service and analytics service.Analytics 
+    service was sending out various events into kafka about the performance of 
+        search results and results of home page service.This could also bring us 
+        information about which thumbnail works best.
+      - So, let's say there are particular thumbnails on which we get a lot of clicks
+    and there are certain thumbnails on which we do not get a lot of clicks. Both these
+        information - of all thumbnails and the performance of each thumbnail would be 
+        joined together to figure out which thumbnail is the best one for a movie
+        and that thumbnail should be shown .
+      - I do have that data in hadoop, of all thumbnails, we will put data of analytics 
+    service also in hadoop saying I have a log of which thumbnail got what kind of 
+        views for what kind of users.
+        Now instead of just finding one best thumbnail , we could run our machine
+        learning model on this, which kind of tells us that for which kind of user 
+        which thumbnail works the best. Now we have the best thumbnails. 
+      - we probably have a lot of best thumbnails for a kind of users. Now, when 
+    search service queries, it kind of tries to figure out what type of user  I have and 
+        basis that , it can select thumbnail
+      - Now how do we do user tagging,   
+
 
 
 
