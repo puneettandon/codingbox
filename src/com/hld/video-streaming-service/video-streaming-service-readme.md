@@ -341,8 +341,94 @@
       - we probably have a lot of best thumbnails for a kind of users. Now, when 
     search service queries, it kind of tries to figure out what type of user  I have and 
         basis that , it can select thumbnail
-      - Now how do we do user tagging,   
+      - Now how do we do user tagging,this could be one good use case of a machine
+    learning model that can run out of this Apache Spark Cluster.
+      - We were also putting a lot of information into kafka about the videos that a
+    person is watching and what percentage of video they are watching.
+        If person is watching for very short time, we can safely assume that
+        the person does not like the video. or if person is watching for long time
+        we can assume that the person is liking the video.
+     - so because we don't have functional requirement of adding a rating to a video,
+    therefore we don't have this information in a very first hand model,  but we 
+       can use this time duration as a proxy for rating. 
+       Let's say that we convert this into a numerical value of 1-5 and try to give
+       a rating to a video that a person would have potentially given basis the time they
+       have watched.Think of it - for a lot of videos, for a lot of users, there are too 
+       many users giving rating to too many videos. All of this information also comes
+       into this kafka.
+     - Now what could we do? firstly, we could just simply classify users into groups.
+    we can say if a person is liking a certain kinds of  video , they possibly fall 
+       into some category or we like some genre video. Once we have this kind of information
+       we can store this information into cassandra then this information could be used for 
+       other things like recommendations.
+     - The other input would be the searches that the user is doing. So if user is 
+     searching for let's say back to the future, the person is telling you that he wants
+       to see that movie whether you have that movie in your datastore or not , but it is still good 
+       to know what that movie is all about because that will give you enough 
+       information about the user.All of these can also be part of user profiling information.
+       Basis these lots of data points , we should be able to classify users into a couple of 
+       genres that they like.
+     - We could say we if person likes action movies and let's say the best movie in action 
+    is for example mission impossible - then person is likely to watch mission impossible 
+       because they like action movies.This becomes recommendation .So same data
+       comes to kafka flows into your spark streaming , get stored into hadoop, there is 
+       some analytics done on top of it, some classification ( based on machine learing model)
+        So we can also precalculate what kind of movie user is gonna watch.So when 
+       building home page we can put that movie.
+    - 
+    
+    - Another event coming into kafka was geo-tagging and device finger printing of 
+    users at the time of login.That could be handled in similar model.Put that into 
+      spark streaming,put that into Hadoop, do a group by kindo of thing by user_id , try
+      to figure out how many unique logins have come in for users, if you want to , kind of bifurcate by
+      the kind of devices that the user has logged in through, or the kind of geographies 
+      that the person has done it from.Just put that in report kind of thing 
+      and look at it.
+      May be we will get to know people are travelling and because of that, the 
+      data is actually that great or may be we will get to know some of users who are 
+      actually spreading out their credentials.
+      
+    - Traffic Predictor - We have two kinds of CDNs - one is main cdn, which has all 
+    of our data , which is in very few locations across the globe and Then we have 
+      local CDNs which are sitting in each country or may be multiple such CDNs
+      within the country, which are catching the data to improve the experience of users 
+      within that country.There are multiple ways to load that data into local CDN.
+      One is - if somebody is watching the video, you request from main CDN and also put
+      in the local CDN.But that's probably ok but not good
+    - What if you would predict that what are the things that people are going to 
+    watch tomorrow? If let's say you come up with a list of videos that people will 
+      watch on the following day, you could actually cache it beforehand.
+    and by doing that you could actually save a lot of bandwidth. and the most 
+      important thing, by caching you will get is that , you will be able to achieve 
+      your NFRs.Because if now latency is reducing , you will have less probability of 
+      of buffering and thereby better user experience.
+     - how would that work? Again it would be a machine learning model that uses all of the 
+    usuage data like what videos people are watching and use that to predict what possibly people 
+       will watch. But one more key data input into that would be new launch.
+       Let's say new TV series is going to be launched tommorrow. You know for a
+       fact that people in lot of geographies would watch that .Let's say series is 
+       in German , So people in Germany would be watching it but probably not people in 
+       India. So it make sense to put it in the local CDN only in Germany.
+       So all of these data points could be used and could be input to the 
+       traffic predictor, which again would run on the same data that sits 
+       within the same hadoop cluster and it should be able to give out information 
+       saying for tommorrow, you need to have videos in these CDNs .
+       What it will give is - for each CDN what all videos need to come (from source of truth)
+    - Overall once it calculates all the videos that are required to be present in each CDN, it
+    put all event in kafka saying this is my report of what I belive is required 
+      Go make sure it is available , whoever is responsible . 
+     - There is something called CDN writer - it basically looks at those events 
+    and fetches all the videos and puts them in the right place.
+       It could fetch from S3 which source of truth or it could fetch from main 
+       CDN and put this in required CDNs.
+     - How that could be done efficiently
+        LC1  ->   C1, C2  C3 C4 C5 C6 C7
+       
+ 
+      
+    
 
+    
 
 
 
