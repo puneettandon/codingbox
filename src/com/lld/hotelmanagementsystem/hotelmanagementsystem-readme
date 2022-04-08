@@ -1,0 +1,38 @@
+##Hotel Management System Low Level Design
+
+###Requirements
+- The System should support booking of different room types like standard,deluxe, etc
+- Guests should be able to search the room inventory and book any available room
+- The System should be able to retrieve information, such as who booked a particular room, or what 
+rooms were booked by a specific customer
+- The system should allow customers to cancel their booking - and provide them with a full 
+refund if cancellation occurs before 24 hours of the check in date
+- The system should be able to send notifications whenever the booking is nearing 
+the check-in or check-out date
+- The system should maintain a room housekeeping log to keep track of all 
+  housekeeping tasks.
+- Any customer should be able to add room services and food items
+- The customers should be able to pay their bills through credit card , cheque or cash
+- Admin should be able to add delete and edit a room
+- Receptionist should be able to check in/check out of a guest
+
+
+###Actors
+- Guest 
+- Receptionist
+- Admin
+- Server
+- HouseKeeping
+
+###Use Cases
+- Add/Remove/Edit room
+- Search Room
+- Book room
+- Cancel room
+- Check in 
+- Check out
+- Add room charge
+- Update housekeeping logs
+
+
+
