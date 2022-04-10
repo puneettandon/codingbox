@@ -128,6 +128,88 @@ The reason - whenever somebody is searching for something they are basically
   telling you intent to buy a kind of product.That's very good source for 
   building a recommendation.
 
+- ####Wishlist Service and Cart Service
+    - So each user query goes into kafka, saying this userid searched for this particular product.
+Now from search screen user could be able to wishlist a product or add it to cart
+and buy it. All of those could be done using wishlist and cart service.
+    - Wishlist service is the repository of all the wishlists in the ecosystem and 
+    the cart service is the repository of all the carts in the ecosystem.
+    - Carts are basically shopping bag, which when people put product into it and 
+    then checkout.
+    - Both services are built in exactly same way. They provide APIs to add a product into 
+    user's cart or wishlist.Get a user's Cart or Wishlist or delete a particular 
+      item from that.And they would have similar data model and they are both sitting on 
+      their own MySql databases.
+    - Keep both hardwares separate.Just in case, for example, wishlist size becomes too 
+     big and it needs to scale out so we can scale this particular cluster accordingly.
+    - But otherwise functionally both of them are totally same.   
+   - Now each time, a person is putting a product into wishlist , they are again giving you signal .
+    Each time they are adding something into their cart they are again giving a signal about their 
+     preferences , things that they like that they want to buy and all of that .
+     All of those could again be put into kafka for a very similar kind of analytics.
+   - So from this kafka , there would be something like a spark streaming consumer.
+    one of the very first thing that it does is - kind of come up with some kind 
+     of reports on what products people are buying right now.Those would be things like
+     coming up with report saying what was the most bought item in the last 30 minutes, or 
+     what was the most wishlisted item in last 30 minutes, or in electronics category
+     what which product is the most sought-after product.so all of those would 
+     be inferred by this spark streaming. Other than that it also puts all 
+     the data to hadoop saying this user has liked this product, this user
+     has searched for this product anything that happens. On top of it, we
+     could run various ML algorithms.Given a user and a certain kind of products that they
+     like, we could be able to figure of two kinds of information.
+     - one is what other products this user might like
+     - Other is how similar is this user to other users and based on products 
+    that others users have already purchased we would recommend a particular product
+       product to the user. 
+       
+- ####Recommendation Service
+    - So all of those is calculated by this spark cluster on top of which we can ran
+    various ML jobs to come up with this data. once we calculate those recommendations
+       this spark cluster basically talks to something called Recommendation Service.
+     - which is basically the repository of all the recommendations, and it has 
+    various kinds of recommendations.
+     -  One is given a userId, if you store general recommendations saying what 
+    are the most recommended products for this user. and it will also store the 
+        same information for each category.Saying for electronics for this user 
+        these are the recommendations.For the food kind of a thing, for this user,
+        these are the recommendations.So when a person is actually on home page they 
+        will first see all in just general recommendations and if they navigate into a 
+        particular category they will see the specific recommendations which are specific 
+        to the category. 
+       
+- #### User Service
+    - User Service - repository of all the users.It provides various API is to 
+    GET details of a user, update details of user.
+    - Sits on top of MySQL and redis cache on top of it.
+    - Search service wants to get details of user, it will first query redis to get 
+    details of the user.If not found , it will query MySQL, get the user information 
+      store it in redis , and return it back.
+      
+- #### Logistic Service and Warehouse Service
+    - Normally these two components come in once the order is placed.But in this 
+    scenario this serviceability service might query either of these two services not 
+      a runtime , but before caching  the information to fetch various attributes.
+      So for example it might query this warehouse service to get a repository of all 
+      items that are in the warehouse or it might query Logistic service to get 
+      details of all the pin codes that are existing or may be details about or the 
+      courier partners that work in a particular locality and with all of that information 
+      this serviceability service will basically create a graph kind of thing 
+      saying what is the shortest path to go  from point A to point B and in how 
+      much time can I get there.(For more details see implementation of Google Maps)
+    - This does not really do any calculation at runtime. You store all the 
+    information in a cache and whenever anybody queries , it will query the cache and 
+      return the results from cache itself, and no runtime calculations because those 
+      would be slow.
+    - It will precalculate all possible requests that can come to it.Basically if there 
+    are N pincodes and M warehouses , it will  do M * N and calculate all possible  combinations
+      of requests that can come to the service, and store it in a cache. 
+      
+
+- ### What happens user place an order?
+
+
+       
     
     
 
