@@ -207,7 +207,52 @@ and buy it. All of those could be done using wishlist and cart service.
       
 
 - ### What happens user place an order?
-
+  
+    - User Purchase Flow - This could be access to apps , mobile apps or web browsers.
+    Now whenever User says that I am ready to place an order take me to the 
+      payment screen then basically request goes to Order Tracking Service.
+    - Order Tracking Service - It is part of Order Management System which 
+    takes the order . Now order management system sits on top of a MySQL database. 
+      Why MySQL? because if you look at order and table form for Order, it will have
+      a lot of tables, some with order information , some with customer information , 
+      some with item information and there are a lot of updates that happen on to 
+      order database for each order.Now we need to make sure that those updates are 
+      atomic and they can form a transaction so as to make sure that there are no 
+      partial updates happening and MySQL provides Atomicity.So leveraging that.
+   - Order Id is generated .
+   - we put entry into Redis saying this orderId was created at some point in time 
+    and this record expires at some time.why is it being used?
+   - Now the record that goes into this MySQL database has an initial status.
+    Created.
+   - We basically call Inventory Service.We want to block the inventory.So let's 
+    say there were 5 units of TVs that a user wanted to purchase ,we will reduce the inventory
+     count at this point in time, and then send the user to payment.why do we do that?
+     Let's just say there was just one TV and three users want to come in at the same time.
+     Now we want to make sure only one of them buys the TV and two of them it should 
+     show that it is out of stock.we can easily enforce that, through this 
+     inventory service , by having a constraint on to the table which has the count column
+     saying that 'count' cannot go negative.Now each time you basically want to 
+     place that order for a TV, so if count is one , only one of the users will 
+     be able to do that transaction where the count reduces.For the other two, it 
+     will be constraint violation exception because count cannot be negative.so 
+     only one will go through inventory.
+  - Now once the inventory is updated then the user is taken to something called as 
+    a Payment Service.Think of it as abstraction over the whole payment flow where 
+    in this service  talks to your Payment gateways and take care of all the interaction
+    with the payment.
+  - Interaction with payment service can lead to different outcomes - 
+        - Payment was successful - 
+        - Payment failed due to some reason
+        - Person could just close the browser window in which case payment
+    service would not give a response.
+  - If order payment successful , status would be placed.
+  - After that event will be sent to kafka saying an order has been placed with so and so details
+   - If order payment failed , saying there was no money in the account, 
+    now once the payment has failed , first of all, we need to cancel the order
+     because payment is failed and we need to increment the inventory count.
+     again call inventory service saying that you decremented that quantity for this 
+     order id now please increment it back.
+     
 
        
     
