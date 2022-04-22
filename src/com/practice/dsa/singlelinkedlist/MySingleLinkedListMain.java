@@ -22,7 +22,7 @@ public class MySingleLinkedListMain {
       //  list.head.next = list.head;
 
        list.traverseLinkedList();
-/*
+
         list.countNodesIteratively();
         list.countNodeRecursively();
 
@@ -32,11 +32,11 @@ public class MySingleLinkedListMain {
 
         list.IsLinkedListPallindrome();
 
-        list.reverseLinkedList();*/
+        list.reverseLinkedList();
 
-     //   list.reverseLinkedListRecursively();
+        list.reverseLinkedListRecursively();
 
-     /*   if(list.detectLoop()) System.out.println("Contains Loop");
+        if(list.detectLoop()) System.out.println("Contains Loop");
        else System.out.println("Does not contain loop");
 
         if(list.detectLoopWithoutHashSet()) System.out.println("Contains Loop");
@@ -45,11 +45,11 @@ public class MySingleLinkedListMain {
         if(list.detectLoopFloyd()) System.out.println("Contains Loop");
         else System.out.println("Does not contain loop");
 
-      */
 
-    /*   list.moveLastToFirst();
+
+       list.moveLastToFirst();
         System.out.println();
-       list.traverseLinkedList();*/
+       list.traverseLinkedList();
 
        list.deleteFromBegin();
        list.deleteFromBegin();

@@ -123,7 +123,7 @@ public class MySingleLinkedList   {
         }
 
         for(int i = 0;i< linkedListValues.size();i++){
-            if(linkedListValues.get(i) != linkedListValues.get(size-1-i)){
+            if(linkedListValues.get(i).equals(linkedListValues.get(size-1-i))){
                 System.out.println("Linked List is not Palindrome");
                 break;
             }
