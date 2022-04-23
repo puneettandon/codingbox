@@ -45,6 +45,13 @@ public class SingleLinkedListTestMain {
         list.detectLoopFloyd();
 
         list.moveLastToFirst();
+        System.out.println();
+        list.traverseLinkedList();
+
+        list.deleteFromBegin();
+        list.deleteFromEnd();
+
+
     }
 }
 
@@ -247,7 +254,38 @@ class SingleLinkedListTest{
     }
 
     public void moveLastToFirst() {
+        NodeTest last = head;
+        NodeTest secLast = null;
 
+        while(last.next != null){
+            System.out.print(last.value + "=>");
+            secLast = last;
+            last = last.next;
+        }
+        secLast.next = null;
+        last.next = head;
+        head = last;
+
+    }
+
+    public void deleteFromBegin() {
+        if(head != null){
+            head = head.next;
+        }
+        size--;
+    }
+
+    public void deleteFromEnd() {
+        NodeTest tempNode = head;
+        NodeTest prevNode = null;
+
+        while (tempNode.next != null){
+            prevNode = tempNode;
+            tempNode = tempNode.next;
+        }
+        prevNode.next = null;
+        tail = prevNode;
+        size--;
     }
 }
 
