@@ -34,7 +34,7 @@ public class MySingleLinkedListMain {
 
         list.reverseLinkedList();
 
-        list.reverseLinkedListRecursively();
+       // list.reverseLinkedListRecursively();
 
         if(list.detectLoop()) System.out.println("Contains Loop");
        else System.out.println("Does not contain loop");
@@ -47,20 +47,22 @@ public class MySingleLinkedListMain {
 
 
 
-       list.moveLastToFirst();
-        System.out.println();
+     //  list.moveLastToFirst();
+       // System.out.println();
+     //  list.traverseLinkedList();
+
+   //    list.deleteFromBegin();
+   //    list.deleteFromBegin();
        list.traverseLinkedList();
 
-       list.deleteFromBegin();
-       list.deleteFromBegin();
+      // list.deleteFromEnd();
+     //  list.deleteFromEnd();
        list.traverseLinkedList();
 
-       list.deleteFromEnd();
-       list.deleteFromEnd();
-       list.traverseLinkedList();
 
        list.searchElement(70);
 
+       list.mergeSort();
 
     }
 }

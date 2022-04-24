@@ -93,7 +93,7 @@ public class MySingleLinkedList   {
         else return  1 + getCountRecursively(node.next);
     }
 
-    void printMiddleElementSlowFastPtr(){
+    MyNode printMiddleElementSlowFastPtr(){
         MyNode slowPtr = head;
         MyNode fastPtr = head;
 
@@ -102,6 +102,7 @@ public class MySingleLinkedList   {
             fastPtr = fastPtr.next.next;
         }
         System.out.println("The middle element is : "+ slowPtr.value);
+        return slowPtr;
     }
 
     void printMiddleElementUsingSize() {
@@ -312,6 +313,57 @@ public class MySingleLinkedList   {
         head = node;
     }
 
+    public void mergeSort(){
+        mergeSortUtil(head);
+        traverseLinkedList();
+    }
 
 
+    public MyNode mergeSortUtil(MyNode head) {
+        if(head.next  == null)
+            return head;
+
+        MyNode mid = printMiddleElementSlowFastPtr();
+
+        MyNode head2 = mid.next;
+        mid.next = null;
+
+        MyNode newHead1= mergeSortUtil(head);
+        MyNode newHead2 = mergeSortUtil(head2);
+        MyNode finalHead = merge(newHead1,newHead2);
+
+        return  finalHead;
+    }
+
+    private MyNode merge(MyNode head1, MyNode head2) {
+
+        MyNode  merged = new MyNode();
+        merged.value = -1;
+        MyNode temp = merged;
+
+        while(head1 != null && head2 != null){
+            if(head1.value < head2.value){
+                temp.next = head1;
+                head1 = head1.next;
+            }else{
+                temp.next = head2;
+                head2 = head2.next;
+            }
+            temp = temp.next;
+        }
+
+        while(head1 != null){
+            temp.next = head1;
+            head1 = head1.next;
+            temp = temp.next;
+        }
+
+        while(head2 != null){
+            temp.next = head2;
+            head2 = head2.next;
+            temp = temp.next;
+        }
+
+        return merged.next;
+    }
 }
