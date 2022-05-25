@@ -7,7 +7,7 @@ Tree Data Structure
      A tree is non-linear and a hierarchical data structure consisting of a collection of nodes
      such that each node of the tree stores a value, a list of references to nodes (the “children”).
 
-
+--------------------------------------------------------------------------------------------------------------------------------------------------
 
 Basic Terminologies in Tree Data Structure:
 
@@ -47,3 +47,23 @@ Refer tree-image.png
     Neighbour of a Node: Parent or child nodes of that node are called neighbors of that node.
 
     Subtree: Any node of the tree along with its descendant
+
+
+--------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+Types of Tree data structures
+
+    1. General tree
+        A general tree data structure has no restriction on the number of nodes. It means that a parent node can have any number of child nodes.
+
+    2. Binary tree
+        A node of a binary tree can have maximum number of two child nodes.
+        In the given tree diagram, node B, D, and F are left children, while E, C, and G are the right children.
+        Refer binary-tree.png
+
+    3. Balanced tree
+        If the height of the left sub-tree and the right sub-tree are equal or differs at most by 1,
+        the tree is known as balanced tree data structure.
+
+
