@@ -28,5 +28,28 @@ public class BalancedParenthesis {
         }else{
             System.out.println("Given string is not well formed");
         }
+
+        balancedParenthesisPr();
+    }
+
+    private static void balancedParenthesisPr() {
+
+        String str = "[[{abcd}]]";
+
+        Stack<Character> stack = new Stack();
+
+        for(int i = 0;i < str.length();i++){
+            char ch = str.charAt(i);
+            if(stack.empty()) stack.push(ch);
+            else if(ch == '{' || ch =='[' || ch == '(') stack.push(ch);
+            else if(ch == '}' && stack.peek() == '{')  stack.pop();
+            else if(ch == ']' && stack.peek() == '[')  stack.pop();
+            else if(ch == ')' && stack.peek() == '(')  stack.pop();
+        }
+        if(stack.empty())
+            System.out.println("Parenthesis are balanced");
+        else
+            System.out.println("Parenthesis are not balanced");
+
     }
 }

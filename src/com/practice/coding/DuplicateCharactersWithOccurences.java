@@ -12,6 +12,21 @@ public class DuplicateCharactersWithOccurences {
         String str = "puneettandon";
 
         printDuplicateCharactersWithOccurences(str);
+        printDuplicateCharactersWithOccurencesPr1(str);
+    }
+
+    private static void printDuplicateCharactersWithOccurencesPr1(String str) {
+
+        Map<Character,Integer> map = new LinkedHashMap<>();
+        for(int i = 0;i<str.length();i++){
+            char ch = str.charAt(i);
+            if(!map.containsKey(ch))
+                map.put(ch,1);
+            else
+                map.put(ch,map.get(ch)+1);
+        }
+        System.out.println("once more");
+        map.forEach((k,v) -> System.out.println(k + " : "+v ));
     }
 
     private static void printDuplicateCharactersWithOccurences(String str) {

@@ -8,7 +8,7 @@ Implement a movie ticket booking application for theatre. Refer to the following
     -> Once a User selects a particular show to book tickets for , a UserBookingSession starts.Within this UserBookingSession, a User will be able
        to get the available seats for the show and select the seats he wishes to book. It is good to have for the application to have limits
        on number of seats a User can book in a ticket.
-    -> Once the user has selected a group of seats, these seats should become Temporary_UNAvailable to all other users.
+    -> Once the user has selected a group of seats, these seats should become Temporary_UnAvailable to all other users.
     -> The User then proceeds to make payment which can be either success or failure
     -> If payment failed, user can retry payment  for a maximum number of times. Beyond maximum retries, the seats are made available.
     -> If payment succeeds, ticket or booking confirmation is generated and made available to the user.

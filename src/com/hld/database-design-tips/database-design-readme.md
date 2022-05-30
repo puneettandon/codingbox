@@ -1,4 +1,9 @@
-Database Design Readme
+# Database Design Readme
+
+### Important Links 
+- https://db-engines.com/en/system/Cassandra%3BCouchbase%3BRedis
+- https://denuwanhimangahettiarachchi.medium.com/a-comprehensive-guide-to-distributed-caching-471a0319ed35
+
 
 How Good your System Design is and how well it can scale depends very much on the choice of Database.
 

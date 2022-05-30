@@ -1,0 +1,18 @@
+Heap Data Structure
+
+Heap comes in one of two forms, min heap or max heap.
+
+In a min heap, the elements are all smaller than their children so root node will be the very smallest element
+and then looking down the tree down the heap, the elements gets bigger and bigger.
+
+Insertion in min-heap
+So when we insert an element it always goes in the next empty spot looking top to bottom left to right
+What happens if that's not really where the element should go? what we can do is we can insert  the element
+there and then bubble it up until we get to the right spot.
+So we take the inserted element , we compare it with its parent ,if it's out of order , swap them and then keep going up the tree in this process.
+Now what about removing the minimum element? so we know the minimum element will always be the root node
+and so that's easy to find but but then if we want to remove it we might have an empty spot. So what we do here is we remove
+the min element there, so we take out the root and then we swap that value at the root with the last element added. And then of course
+that element might not be in the right spot, so we take the root element and bubble it down to next spot so we compare the root with its
+own children, its left and its right child , and then swap it with the smaller of the two.
+And then swap it with smaller of the two . and then we keep going down the tree until the heap property is restored. 
