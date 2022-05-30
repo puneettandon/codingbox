@@ -1,9 +1,0 @@
-Problem Statement
-
-Concurrency
-
-Given an integer N, the task is to write java program to print the first N natural numbers via 2 threads one for each even and odd number
-
-We will be using the concept of thread synchronizaton and inter-thread communication to solve it
-
-
