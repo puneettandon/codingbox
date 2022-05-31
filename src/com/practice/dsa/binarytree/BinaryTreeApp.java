@@ -318,7 +318,7 @@ class BinaryTree{
 
     public void boundaryNodes(Node node) {
         if(node != null)
-            System.out.println(node.data + " ");
+            System.out.print(node.data + " ");
         printBoundaryLeft(node.left);
 
         printLeaves(node.left);
@@ -419,7 +419,15 @@ public class BinaryTreeApp {
         root3.left.right.left.left = tree.createNewNode(10);
         root3.left.right.right = tree.createNewNode(11);
         root3.right.right = tree.createNewNode(9);
+        // root 3
 
+    /*
+                   2
+            7             5
+               6                9
+         5         11
+    10
+    */
         Node root4 = tree.createNewNode(2);
         root4.left = tree.createNewNode(7);
         root4.right = tree.createNewNode(5);
@@ -428,6 +436,13 @@ public class BinaryTreeApp {
         root4.left.right.left = tree.createNewNode(5);
         root4.left.right.right = tree.createNewNode(11);
         root4.right.right = tree.createNewNode(9);
+        // root 4
+    /*
+                    2
+             7               5
+         2        6              9
+              5       11
+    */
 
         Node root5 = tree.createNewNode(12);
         root5.left = tree.createNewNode(4);
@@ -517,11 +532,11 @@ public class BinaryTreeApp {
 
         System.out.println("Print Boundary nodes in binary tree: ");
         tree.boundaryNodes(root3);
+        System.out.println();
 
         System.out.println("Print Vertical Order of binary tree ");
 
-        System.out.println("Check if parent contain sum of both children ");
-        tree.checkIfParentSumOfChildren(root5);
+        System.out.println("Check if parent contain sum of both children "+ tree.checkIfParentSumOfChildren(root5));
 
 
     }

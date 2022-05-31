@@ -1,0 +1,30 @@
+Logging Readme
+
+Requirements
+
+Should be able to log in more than one place like console,log file, database etc
+Should be able to log multiple category of messages like INFO,DEBUG,ERROR etc
+Category and place of logging should be configurable
+
+
+Components Involved
+
+Logger -  which will be exposed to the application
+Category - This should be selected at run time based on some parameter
+Sink - This should be selected at run time based on some parameter
+
+
+                                 ERROR      Console
+  Application ---> Logger --->   INFO       File
+                                 DEBUG      Database
+
+                                category      sink
+
+
+
+Design Pattern
+    Creational -   Logger - Singleton
+                  Sink - Factory/ AbstractFactory
+
+    Structural -
+

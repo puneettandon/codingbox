@@ -1,0 +1,246 @@
+Twitter System Design Readme
+
+    Functional Requirements:
+
+        1. Tweet - post content of 140 chars length,could have image,video contents,links to external websites
+        2. Re-Tweet
+        3. Follow
+        4. Search - search content within tweets posted - useful in trend analysis and figure out what is happening
+
+    Non Functional Requirement:
+
+        1. Read Heavy - 100 times more read traffic than write traffic
+        2. Fast Rendering  - Low Latency - Always Availability
+        3. Fast Tweet
+        4. Lag ok in some cases - (Suppose if someone posted something it's ok you are seeing in 20 seconds but when seeing it should be fast)
+        5. Scale
+             -> 150 Mil  DAU (Daily Active Users)
+             -> 350 Mil  MAU (Monthly Active Users)
+             -> 1.5 Bil  Accounts
+             -> 500 Mil tweets/Day
+             -> 5700 tweets/s
+             -> 12000 @ peak
+
+
+-----------------------------------------------------------------------------------------------------------------------------
+
+Categorize users in different categories
+
+    1. Famous - Have huge number of followers  - Actors,Politician,SportsPerson etc
+    2. Active - People who are accessing twitter in last couple of days or hours(example last 3 days)
+    3. Live - Subset of Active users - People who are actually accessing the platform now. - As goes offline move back to active status
+    4. Passive - People who are not in above 3 categories - or haven't accessed twitter in last 3 days)
+    5. Inactive - Deleted accounts (Soft Delete)
+
+
+ --------------------------------------------------------------------------------------------------------------------------------
+
+
+ Architecture of Twitter
+
+ 1. On-boarding process - where users come in and register themselves on platform.
+    UserService - source of truth for all the user related information.
+    And userService will power the login flow, registered flow, user profile screen and other things.
+    userService will also power internal tools and APIs required for serving internal tools.
+        for example if some other service wants to get information about a particular user, they might want to query UserService.
+    APIs -
+        Get - to get by particular userId,
+              to get by emailId
+        Post - to update details of particular user
+        Bulk Get API - to fetch information of a lot of users
+                for example - if there is a screen, on which you see the followers of a particular user,
+                so there will be a lot of followers.So instead of calling this userService one by one for each user to
+                display their name , their email id , their photo and all , we could very well make a call with
+                probably 20-30-40 userIds request and information about all of them coming at once in the response to save the network bandwidth.
+
+        User Information is a very much relational. From scale standpoint it has million of users , but they are still finite enough and it will
+        not go unboundedly. (Relational model ). So MySQL.
+        Optimizations on MySQL - User information don't change frequently - More of write heavy system but bit of reads,
+        but reads are mostly powered by a Redis Cache.
+        Redis Cache - image of user database which has a key of userId
+
+
+
+ 2. User Follow process - Any particular user can go to someone else's profile and follow them.
+    They might want to get certain information about the following process like they want to know who I follow
+    or how many users follow me.
+    It is powered by GraphService
+    Called GraphService because it creates a network of how everybody in the ecosystem is connected.
+    GraphService APIs -
+        - To add a new follow link
+        - To get all the followers of a person
+        - To get all the people who this person is following
+        - Bulk Api - Get all the followers of a list of users
+                   - or Get a list of list of users of a list of users who are being followed.
+    Sits on Top of another MYSQL DB. 2 different clusters.
+    Larger data ....requires sharding the data.
+    userId,followerId,timestamp on which transactions happened.
+    Data which doesn't get updated very frequently.
+    Overall at a larger layer across all the 150 million active users per day, this would be updated but for one user
+    it wouldn't get updated too frequently.
+    Need to cache two types of information in redis,
+        - first of all given a userId what are the list of users that this person follows(following)
+        - Given userId, who are the list of users that follow this particular user, which is basically the  followers of the user.
+    can use same or different redis.
+
+
+
+3.  Analytic Process - whenever a user is interacting with twitter, they are sending certain signals even if they are not explicit.
+    Lets say while browsing through a list of tweets that they go through, and if they spend much time on one of the tweets,
+    kind of telling have interest in this tweet.Gather information based on the way people access the whole platform.
+    So whenever we find the some event of importance happening on the UI(app/website). Track it and use it for analytics.
+
+    AnalyticsService - events put on kafka.
+
+    User Live WebSockets(Notification)
+    User Group for different kind of users -
+    Live Users - using twitter right now
+    Suppose I am using twitter right now and one of the people who I follow posted something.
+    It would make sense to just so that I don't have to open the app , refresh, or do something.
+    or If somebody has tagged me in a tweet and If I get notified about that. will be nice user experience.
+    We are capturing till how much time the user is actually live.and When this communication between the two parties
+    stop, we do realize that person has gone away, close the app, the person is not live anymore.
+    If person is not live we cannot send them this kind of notification.
+    That information will be put in kafka saying the user is not live anymore, he was live at a particular timestamp.
+    That information will go to userService , it will store it int  the cache redis saying the usertype has now moved from
+    live user , to active user.
+
+----------------------------------------------------------------------------------------------------------------------------
+
+
+Tweet Post
+1. What happens when somebody posts a tweet which means adding a new text.
+   First of all tweets could contain text, images, videos also.
+
+   Asset Service - If it's a image or a video content, we will have something called an Asset Service.It is responsible
+   for all the multimedia content, which could be videos, images, or anything of that sort.
+   It takes care of uploading it to wherever it need to and even when somebody needs to see it this is responsible for
+   displaying the content.
+   Asset service is basically video hosting platform.
+
+   One can also place a link in the text of a tweet.Tweet has a constraint of 140 characters.
+   So you need a url shortener. whenever you want to post a big url , there will be a url shortener, which will
+   give a short url instead of big url and you could post that.
+   Assume that can be taken care of in UI automatically, and for backend of it will have a short url service.
+
+   Each time a person posts a tweet, basically types a text, hits submit button, that make call to the Tweet Ingestion Service.
+   Which first of all it does is - stores it in a permanent datastore.
+   Using cassandra for storing the tweets.
+   Why cassandra - massive amount of data - millions of tweets per day - and cassandra can easily handle that and scale
+   tweet table with tweetId, userId, tweetContent ..........
+   Tweet Ingesting service is just responsible for posting a tweet.It doesn't provide GET API call.
+   Once it is posted to cassandra, it puts a event into kafka, saying I have got a new tweet.
+
+Tweet Service
+2. Tweet Service is basically a source of truth service for all tweets. Basically sits on top of cassandra cluster,
+   owns the schema and data within that.
+   This tweet service will provide you all set of APIs you need to display any tweet.
+   Get by tweetId, Get tweets of a user, ........
+   Whenever somebody's timeline needs to be generated , that is also powered by this Tweet Service.
+
+
+   On the read flow, There are two kinds of views that a person can have.
+   --> User Timeline - which is basically a series of tweets, ordered by something generally by timestamp
+       user timeline is basically your own timeline.This basically contains all the tweets, all the retweets ,that
+       you have posted
+
+   --> Home Timeline - which you see on home page. So all the people you are following, all their tweets will show up
+       in your timeline.
+
+   Basically user timeline is basically select * from tweets on Cassandra where userId = 'yourUserId'
+   And construction of home timeline is select * from tweets on cassandra where userId in [all people you follow]
+   Now these list of people you follow could be thousands of people, making this query at runtime, will be
+   something like first of all fetch a user's followers and get all the tweets and arrange that. (Naive implementation)
+   but would not scale for 150m users.
+   Instead trying to cache the user timeline.
+   We know that there are some active users who will come to website.
+   Instead of calculating at runtime we precalculate all of their timelines and just show it to them then and there.
+
+
+
+Tweet Processor
+3. Tweet processor does is basically sees that ok user1 has tweeted something , now let me try to get their followers
+   and let's say it figures out that there are some users whose timeline needs to be updated because this tweet will
+   now show up in all of those user's timelines.
+   Then it will create timeline for all of those users and put it in this cache(redis).So when users try to come on their
+   home screen they just do a cache look up and their view is sorted.
+   Tweet processor will query Graph Service to figure out all the users basically user to its followers mapping.
+
+   Problems in above design
+
+   1. we are maintaining everything in redis(which is in memory solution) which means we require massive amount of RAM.
+   Now if we try to keep timelines of all the users in redis that will be inefficient.
+   So only those users timeline would be stored in redis who are active.
+   Easily able to figure out who are active users through UserService ( which has user to type mapping).
+   Once Timeline service figures out from userService that user  is a passive user and don't have any data in redis.
+   It will essentially query graph service who ever it needs it in the system , try to figure out all the data it needs to figure out
+   and then it creates a timeline.Graph service will provide all the users who this user follow and get list of users
+   whose tweets will be shown.Then queries tweet service to give all the tweets of  all the users (within some specific time span).
+
+   Once it gets all the tweets it arrange them as per timeline as per timestamp, stores it back in redis and shows to UI.
+
+    Optimizations for Live users(Online right now) -
+        Tweet processor anyway knows that who all's timelines have to be updated.All the tweets are coming to this kafka
+        and we also know who are live users.
+        Once the tweet processor figures out that a particular users timelines is to be updated and if it is a live user
+        , it actually puts back an event back to kafka, and then comes the live websocket to send notification to app.
+        Tweet processor tries to update redis.but while updating redis it will also get to know that this user is a live user.
+        So it will put back an event into kafka ,saying whoever is responsible for sending this notification to the user.
+        send it right way don't wait for user to query back.
+        Through this route , it will come to the userApp and UX should be able to handle it saying ou have more tweets scroll up ....
+        Live users don't even need to query redis.while they are on app.they will keep getting notifications and newer tweets
+        will be shown on UI.
+
+
+    2. Example - If we look at Donald Trump, he has roughly 75 million followers. That means each time donald trump makes tweet,
+       there needs to be 75m updates for each of his tweets.(That's a big number).and will be inefficient if we start updating
+       75m records on update of one person and more problem if that person starts tweeting frequently.
+       Instead what we could do - we have famous users( people with big number of subscribers or followers)
+       we will not do any of these things for these kind of users.Timeline service would take care of merging everything.
+       So Timeline service knows that Redis has data only of tweets of normal users.So once it gets the data of all the users,
+       it now tries to figure out what are the tweets that should be shown to this user of famous users.
+       So Timeline service will basically then queries graph service again and tries to figure out who are the famous users
+       that this person was following and get their tweets as well.
+       Now timeline service after querying graph service, through tweet service has all the tweets of a person like Donald Trump.
+       Timeline service also has the tweets of normal users and it can show it to the UI.But before showing it to UI, it can
+       update in redis.
+       It can update in Redis , saying I have not just captured the regular users, I have also captured the famous users.
+       And it will also add the flag saying that I have updated the data in this particular user's timeline of famous user
+       at particular timestamp.
+       what data structure it stores is something like a list of tweets + timestamp (ti)
+       Now next time we get the request for same user, we basically see this timeline service looks at this timestamp.
+       If this timestamp was 5-10 minutes before , then it can again query the tweets of some famous users from tweet service.
+       because those could have tweeted again in last 5-10 minutes.
+       But if timestamp is just 5 seconds in the past we can safely assume that there is no new tweet and just return from the redis directly
+       without querying from tweet service and then cassandra.
+       So famous users, we will follow , kind of different way, just because if we try to handle in it normal way , it is going to
+       put a lot of load on various components.
+
+       For Inactive users - ( user accounts that are deactivated). So those users don't really login and cannot login.
+       So don't have to do anything for those users.
+
+
+       -----
+       Famous Users
+        There could be certain users who are famous, who follow some other famous user.
+        Example - Donald Trump is following Elon Musk(both have million of followers).
+        So, what we could do is neither of the tweets will follow .
+        So both of their tweets will not go the Redis route normally but if Elon musk tweets then Donald Trump should get notified at least.
+        At least famous users within themselves should get to know of each user.So those kind of things could be handled by tweet processor.
+        Whenever a tweet of a famous user come in , don't update the cache of all the users but just update the cache of other famous users
+        that are following this user.
+
+
+        ---------------------
+
+        Potential Bottlenecks -
+        1. Cassandra - Because a lot of times when we are querying this.
+        2. Redis - This redis is definitely a piece that needs to scale up.why? because this is something totally in RAM.
+        3. Kafka
+
+        Other things are horizontally scalable.
+
+        ------------------------------------------------------------------------------------------------------------------
+
+        Search and Analytics
+        TODO

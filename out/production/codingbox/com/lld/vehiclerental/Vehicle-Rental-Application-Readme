@@ -1,0 +1,29 @@
+Vehicle Rental Application
+
+Using OO principles to design a cab rental application
+
+
+Users should be able to create an account for them to book vehicles of the below types
+
+1. Hatchback
+2. Suv
+3. Sedan
+4. Threewheeler
+5. Truck
+6. Van
+7. Motorcycle
+8. Bicycle
+
+
+Admin should be able to add vehicle to inventory
+Users should be able to book an available vehicle
+Users should be able to scan qrCode of the vehicle and book
+Users can pick booked vehicle from the available designated places
+Users should be able to cancel the booking
+Users should be able to return the vehicle post usage
+Users get the invoice for payment post returning the vehicle
+Users should get reminder notification a day before their booking
+Users should be able to choose and add devices and services to the vehicle they book
+
+System should provide APIs to search for vehicles booked by users by userid and for a particular interval
+
