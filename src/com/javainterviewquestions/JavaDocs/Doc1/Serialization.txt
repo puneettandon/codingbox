@@ -1,0 +1,62 @@
+		Serialization and Deserialization in Java 
+
+Serialization in java is a mechanism of writing the state of an object into a byte-stream.It is mainly used in Hibernate,RMI,JPA,EJB and JMS.
+
+The reverse operation of serialization is called deserialization where byte-stream is converted into an object. 
+
+The serialization and deserialization process is platform-independent,it means you can serialize an object in a platform and deserialize in different platform.
+
+For serializing the object,we call writeObject() method of ObjectOutputStream and for deserializing we call readObject() method of ObjectInputStream class.
+
+		
+		
+	java.io.Serializable interface
+
+Serializable is a marker interface(has no data member and method).
+
+It is used to "mark" java classes so that the objects of these classes may get a certain capability. 
+
+It must be implemented by the class whose object you want to persist.
+
+The String class and all the wrapper classes implement the java.io.Serializable interface by default.
+
+example
+class Student implement Serializable{ .......  }
+
+	
+
+ObjectOutputStream class
+
+The ObjectOutputStream class is used to write primitive data types, and java objects to an OutputStream.Only objects that support the serializable interface can be written to streams.
+
+Java Serialization with Inheritance(IS-A Relationship)
+If a class implements serializable then all its sub classes will also be serializable.
+example - class Person implements Serializable{....}
+class Student extends Person{ ........}
+Now you can serialize the student class object that extnds the Person which is serializable.
+
+
+Java Serialization with Aggregation(Has-A relationship)
+If a class has reference to another class,all the references must be Serializable otherwise serialization process will not be performed.
+In such case,NotSerializableException is thrown at runtime.
+example-: class Address{.....}
+class Student implements Serializable{ .....Address address; ......}
+
+Since Address is not Serializable,you can not serialize the instance of Student class.
+All the objects within an object must be Serializable.
+
+
+
+
+Java Serialization with the static data member
+If there is any static data member in a class,it will not be serialized because static is the part of class not object.
+class Employee implements Serializable
+{
+ ....
+static String company="SSS IT Pvt Ltd"; // it won't be serialized
+}
+
+
+
+Java Serialization with array or collection
+In case of array or collection,all the objects of array or collection must be serializable.If any object is not serializable, serialization will be failed.

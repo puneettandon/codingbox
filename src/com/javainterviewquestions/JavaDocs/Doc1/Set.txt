@@ -1,0 +1,64 @@
+			Set 
+
+Set is an interface which extends Collection.
+It is an unordered collection of objects in which duplicate values can not be stored.
+
+Basically, Set is implementd by 
+	HashSet 
+	LinkedHashSet
+	TreeSet(Sorted representation)
+
+Set has various methods to add,remove clear, size,etc to enhance the usuage of this interface.
+
+import java.util.*;
+public class Set_example{	
+psvm(){
+	Set<String> hash_Set = new HashSet<String>();
+	hash_Set.add("Geeks");
+	hash_Set.add("For");
+	hash_Set.add("Geeks");
+	hash_Set.add("Example");
+
+System.out.println(hash_Set);
+
+Set<String> tree_Set = new TreeSet<String>(hash_Set);
+System.out.println(tree_Set);
+
+Output:
+Set output without the duplicates[Example,Geeks,For]
+Sorted Set after passing into TreeSet[Example,For,Geeks]
+
+-----------------------------------------------------------------
+
+Note: As we can see the duplicate entry "Geeks" is ignored in the final output,Set interface doesn't allow duplicate entries.
+
+-----------------------------------------------------------------
+
+Basic Operation on the Set i.e. Union, Intersection, and Differnce
+
+Example: 
+set1 = [1,3,2,4,8,9,0]
+set2 = [1,3,7,5,4,0,7,5]
+
+Union: [0,1,2,3,4,5,7,8,9]
+
+Intersection: [0,1,3,4]
+
+Difference: [2,8,9]
+
+-------------------------------------------------------------
+Set<Integer> a = new HashSet<Integer>();
+a.addAll(Arrays.asList(new Integer[]{1,3,2,4,8,9,0}));
+Set<Integer> b = new HashSet<Integer>();
+b.addAll(Arrays.asList(new Integer[]{...................}));
+
+Set<Integer> union = new HashSet<Integer>(a);
+union.addAll(b);	SOP(union);
+
+Set<Integer> intersection = new HashSet<Integer>(a);
+intersection.retainAll(b);	SOP(intersection);
+
+Set<Integer> difference = new HashSet<Integer>(a);
+difference.removeAll(b);	SOP(difference);
+
+-----------------------------------------------------------------

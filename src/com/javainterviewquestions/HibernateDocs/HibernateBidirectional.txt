@@ -1,0 +1,9 @@
+		Hibernate Bidirectional Mapping
+
+Bidirectional association allows us to fetch details of dependent object from both side.
+In such case, we have the reference of two classes in each other.
+
+Let's take an example of Employee and Address, if Employee class has  a reference of Address and Address has a reference of Employee. 
+
+Additionaly ,you have applied one to one or one to many relationship for the clasess in mapping file as well ,it is known as bidirectional association.
+

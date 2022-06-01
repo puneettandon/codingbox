@@ -1,0 +1,63 @@
+		Hibernate  Inheritance 
+
+Table Per Subclass
+
+In case of table per subclass strategy, tables are created as per persistent classes
+but they are treated using primary and foreign key.
+So there will not be any duplicate column in the relation.
+
+Strategy -   @Inheritance(strategy=InheritanceType.JOINED) in the parent class
+
+	and  @PrimaryKeyJoinColumn annotation in the subclassess
+
+-------------------------------------------------------------------
+
+Table structure for each table will be as follows:
+
+Table structure for Employee class
+
+id		number
+Name 		varchar2
+
+
+Table structure for Regular_Employee 
+
+Eid 		number
+Salary		float
+bonus		number
+
+Table structure for Contract_Employee
+
+Eid		number
+pay_per_hour	float
+contract_duration varchar2
+
+-----------------------------------------------------------------------------
+
+
+Employee.java
+
+@Entity
+@Table(name="employee103")
+@Inheritance(strategy=InheritanceType.JOINED)
+public class Employee{
+
+}
+
+
+Regular_Employee.java
+@Entity
+@Table(name="regularemployee103")
+@PrimaryKeyJoinColumn(name="ID")
+public class Regular_Employee extends Employee{
+	
+}
+
+
+Contract_Employee.java
+@Entity
+@Table(name="contractemployee103")
+@PrimaryKeyJoinColumn(name="ID")
+public class Contract_Employee extends Employee{
+
+}

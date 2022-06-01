@@ -1,0 +1,126 @@
+			Saving Collections
+
+@Entity
+@Table(.......)
+public class UserDetails{
+	
+	@Id @GeneratedValue(strategy=..........)
+	private int userId;
+	private String userName;
+	@ElementCollection
+	private Set<Address> listOfAddresses = new HashSet();
+
+	// setter and getter
+
+	public Set<Address> getListofAddresses(){ return listOfAddresses;   } 
+	public void setListOfAddresses(Set<Address> listOfAddresses){
+		this.listOfAddresses = listOfAddresses;
+	}
+}
+
+Test.java
+
+UserDetails user = new UserDetails();
+user.setUserName("First User");	
+Address addr1 = new Address();
+addr1.setStreet("First Street");
+addr1.setCity("First City");
+addr1.setState("First State");
+addr1.setPincode("10000001");
+
+Address addr2 = new Address();
+addr2.setStreet("S Street");
+addr2.setCity("S City");
+addr2.setState("S State");
+addr2.setPincode("20000002");
+
+user.getListOfAddresses().add(addr1);
+user.getListOfAddresses().add(addr2);
+
+Annotation for list in hibernate 
+
+@ElementCollection
+------------------
+
+Address.java 
+@Embeddable
+public class Address{
+------------------------
+}
+
+how it saves in database
+
+insert into User_Details(username,userId) values (? ?)
+insert into UserDetails_listOfAddresses(UserDetails_userId,City_name,pin_code,state_name,street_name) values(? ? ? ? ? )
+insert into UserDetails_listOfAddresses(UserDetails_userId,City_name,pin_code,state_name,street_name) values(? ? ? ? ? )
+
+-----------------------------------------
+
+UserDetails
+
+userId 	username
+1	FirstName
+
+UserDetails_listOfAddresses
+
+userdetails_userId  city_name  		pin_code  state_name  street_name
+1			S City		2000002	  S State       S Street
+1			First City	1000001   First State   First Street
+
+-----------------------------------------------------------------------------
+
+
+Implications of Collection object
+
+
+1. Name of Table
+
+how to change table provided by hibernate
+
+soln: 
+@ElementCollection
+@JoinTable(name="User_Address")
+private Set<Address> listOfAddresses = new HashSet<Address>();
+
+----------------------------------------------------------------------------------
+2. Name of Column 
+
+how to change column name userdetails_userid in userdetails_listOfAddresses Table
+
+@ElementCollection
+@JoinTable(name="User_Address",
+	    joinColumns=@JoinColumn(name="User_ID")
+	)
+private Set<Address> listOfAddresses = new HashSet<Address>();
+
+
+----------------------------------------------------------------------------------
+
+
+3. Define index i.e id for User_Address Table
+
+no index supported for HashSet 
+ UserDetails.java 
+
+Arraylist support for index
+@ElementCollection
+@JoinTable(name="User_Address",
+	    joinColumns=@JoinColumn(name="User_ID")
+	)
+@GenericGenerator(name="hilo-gen",strategy="hilo")
+@CollectionId(columns = {@column(name="Address_Id)},generator= "hilo-gen", type=@Type(type="long")) // from hibernate 
+private Collection<Address> listOfAddresses = new ArrayList<Address>();
+
+----------------
+
+following will be the insert statements
+
+insert into USER_DETAILS(username,userid) values(? ? )
+insert into USER_ADDRESS(USER_ID,Address_Id,City_name,....................)
+insert into USER_ADDRESS(USER_ID,Address_Id,City_name,.....................)
+
+user_id ,address_id ,pin_code,.............................
+1	  1	      1000001
+1	  2	      2000002
+----------------------------------------------------------------------------------
+

@@ -1,0 +1,24 @@
+			Upcasting 
+
+If reference variable of parent class refers to the object of child class,it is known as upcasting.
+
+	
+	Reference variable of parent class ------>    object of child class
+
+
+
+class A{}
+class B extends A{}
+
+A a = new B(); // upcasting
+
+For upcasting, we can use the reference variable of class type or interface type.
+For ex -
+interface I{}
+class A{}
+class B extends A implements I{}
+
+B IS-A A
+B IS-A I
+B IS-A Object
+

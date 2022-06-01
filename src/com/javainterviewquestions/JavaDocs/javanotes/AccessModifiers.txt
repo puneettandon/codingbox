@@ -1,0 +1,105 @@
+		Access Modifier
+
+There are two types of modifiers in java: 
+	Access Modifiers and Non-access modifiers.
+
+The access modifiers in java specified the accessibility or scope of field, method, constructor or class. 
+
+There are 4 types of java access modifiers:
+1. Private : The access level is only within the class. It cannot be accessed from outside the class.
+2. Default : The access level of default modifier is only within the package. It cannot be accessed from outside the package.If you don't specified any access level ,it will be the default.
+3. Protected : The access level of a protected modifier is within the package and outside the package through child class.If you don't make the child class, it cannot be accessed from outside the package.
+4. Public : The access level is everywhere. It can be accessed from within the class, outside the class, within the package and outside the package.
+
+
+Access Modifier		within class	within package	outside package by subclass only	outside package
+Private			Y			N			N			N
+Default			Y			Y		A	N			N
+Protected		Y			Y			Y			N
+Public			Y			Y			Y			Y
+
+---------------------------------------------------------------
+
+1)Private 
+
+class A{  
+private int data=40;  
+private void msg(){System.out.println("Hello java");}  
+}  
+  
+public class Simple{  
+ public static void main(String args[]){  
+   A obj=new A();  
+   System.out.println(obj.data);//Compile Time Error  
+   obj.msg();//Compile Time Error  
+   }  
+}  
+
+Private Constructor 
+
+If you make any class constructor private, you cannot create the instance of that class from outside the class. For example:
+
+class A{  
+private A(){}//private constructor  
+void msg(){System.out.println("Hello java");}  
+}  
+public class Simple{  
+ public static void main(String args[]){  
+   A obj=new A();//Compile Time Error  
+ }  
+}  
+
+Note : A class cannot be private or protected except nested class.
+-------------------------------------------------------------
+
+
+2) Default 
+accessible only within the package.
+more accessible than private 
+But more restrictive than protected and public.
+
+package pack;  
+class A{  
+  void msg(){System.out.println("Hello");}  
+}  
+
+package mypack;  
+import pack.*;  
+class B{  
+  public static void main(String args[]){  
+   A obj = new A();//Compile Time Error  
+   obj.msg();//Compile Time Error  
+  }  
+}  
+-----------------------------------------------------------------
+
+3) Protected 
+
+accessible within the package and outside the package but through inheritance only.
+
+The protected can be applied on the data member,method and constructor.
+It can't be applied on the class.
+------------------------------------------------------------
+
+4)Public 
+accessible everywhere
+
+-------------------------------------------------------------------
+
+Java Access Modifiers with method Overriding
+
+If you are overriding any method , overriden method (i.e. declared in subclass) must not be more restrictive.
+
+class A{  
+protected void msg(){System.out.println("Hello java");}  
+}  
+  
+public class Simple extends A{  
+void msg(){System.out.println("Hello java");}//Compile Time Error  
+ public static void main(String args[]){  
+   Simple obj=new Simple();  
+   obj.msg();  
+   }  
+}  
+
+The default modifier is more restrictive than protected. That is why, there is a compile-time error.

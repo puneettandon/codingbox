@@ -1,0 +1,36 @@
+			Encapsulation in Java
+
+Encapsulation in Java is process of wrapping code and data together into single unit,for example, a capsule is mixed of several medicines.
+
+We can create a fully encapsulated class in java by making all the data members of the class private. 
+
+The Java Bean class is the example of a fully encapsulated class.
+
+
+public class Student{
+
+	private String name;
+	public String getName(){	return name;	}
+	public void setName(String name){	this.name = name	}
+}
+
+class Test{
+	psvm(){
+		Student s = new Student();
+		s.setName("Vijay");
+		sys(s.getName());
+	}
+}
+
+
+
+Encapsulation is more than just defining accessor and mutator methods for a class. It is a broader concept of object-oriented programming that consists in minimizing the interdependence between classes and it is typically implemented through information hiding.
+
+The beauty of encapsulation is the power of changing things without affecting its users.
+
+
+In an object-oriented programming language like Java, you achieve encapsulation by hiding details using the accessibility modifiers (public, protected, private, plus no modifier which implies package private). With these levels of accessibility, you control the level of encapsulation, the less restrictive the level, the more expensive change is when it happens and the more coupled the class is with other dependent classes (i.e. user classes and subclasses).
+
+
+
+https://stackoverflow.com/questions/11966763/java-encapsulation

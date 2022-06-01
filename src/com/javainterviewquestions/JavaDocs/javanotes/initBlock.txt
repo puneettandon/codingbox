@@ -1,0 +1,126 @@
+		The Initializer Block in Java
+
+Initializer block contains the code that is always executed whenever an instance is created.
+It is used to declare/initialize the common part of various constructor of a class.
+
+Example - 
+...................
+public class GFG 
+{ 
+    // Initializer block starts.. 
+    { 
+        // This code is executed before every constructor. 
+        System.out.println("Common part of constructors invoked !!"); 
+    } 
+    // Initializer block ends 
+  
+    public GFG() 
+    { 
+        System.out.println("Default Constructor invoked"); 
+    } 
+    public GFG(int x) 
+    { 
+        System.out.println("Parametrized constructor invoked"); 
+    } 
+    public static void main(String arr[]) 
+    { 
+        GFG obj1, obj2; 
+        obj1 = new GFG(); 
+        obj2 = new GFG(0); 
+    } 
+} 
+
+
+We can note that the contents of initializer block are executed whenever any constructor is invoked (before the constructor’s contents)
+
+The order of initialization constructors and initializer block doesn’t matter, initializer block is always executed before constructor.
+
+What if we want to execute some code once for all objects of a class?
+We use Static Block in Java
+
+---------------------------------------------
+
+	Multiple Instance Initialization Blocks in a Program
+
+We can also have multiple IIBs in a single class. If compiler finds multiple IIBs, then they all are executed from top to bottom i.e. the IIB which is written at top will be executed first
+
+class GfG 
+{ 
+    // Instance Initialization Block - 1 
+    {  
+        System.out.println("IIB1 block"); 
+    } 
+      
+    // Instance Initialization Block - 2 
+    { 
+        System.out.println("IIB2 block"); 
+    } 
+      
+    // Constructor of class GfG 
+    GfG() 
+    { 
+        System.out.println("Constructor Called"); 
+    } 
+      
+    // Instance Initialization Block - 3 
+    { 
+        System.out.println("IIB3 block"); 
+    } 
+      
+    // main function 
+    public static void main(String[] args) 
+    { 
+        GfG a = new GfG(); 
+    } 
+} 
+Output :
+
+IIB1 block
+IIB2 block
+IIB3 block
+Constructor Called
+
+---------------------------------------------------------
+
+	Instance Initialization Block with parent class
+
+You can have IIBs in parent class also. Instance initialization block code runs immediately after the call to super() in a constructor. The compiler executes parents class’s IIB before executing current class’s IIBs. 
+
+
+class B 
+{ 
+    B() 
+    { 
+        System.out.println("B-Constructor Called"); 
+    } 
+  
+    { 
+        System.out.println("B-IIB block"); 
+    } 
+  
+} 
+
+class A extends B 
+{ 
+    A() 
+    { 
+        super(); 
+        System.out.println("A-Constructor Called"); 
+    } 
+    { 
+        System.out.println("A-IIB block"); 
+    } 
+      
+    // main function 
+    public static void main(String[] args) 
+    { 
+        A a = new A(); 
+    } 
+} 
+
+Output: 
+
+B-IIB block
+B-Constructor Called
+A-IIB block
+A-Constructor Called

@@ -1,0 +1,41 @@
+			OOPs (Object-Oriented Programming)
+
+Inheritance in java is a mechanism in which one object acquires all the properties and behaviors of a parent object. It is important part of OOPs.
+
+The idea behind inheritance in java is that you can create new classes that are built upon existing classes.when you inherit from an existing class, you can reuse methods and fields of the parent class.
+Moreover you can add new methods and fields in your current class also.
+
+
+Why use inheritance in java
+
+For code reusability
+For method Overriding(So runtime polymorphism can be achieved).
+
+
+	Extends keyword 
+
+The extends keyword indicates that you are making a new class that derives from an existing class.
+In the terminology of java, a class 
+
+
+Why multiple inheritance is not supported in java?
+To reduce the complexity and simplify the language,it is not supported.
+
+consider a scenario where A,B, and C are 3 classes. The C class inherits A and B classes. If A and B classes have the same method and you call it from the child class object, there will be ambiguity to call the method of A or B class.
+Since compile-time errors are better than runtime erros, Java renders compile-time error if you inherit 2 classes. 
+
+
+class A{	
+	void msg(){	sys("Hello");	}	
+}
+
+class B{
+	void msg(){	sys("World");	}
+}
+
+class C extends A,B{
+	psvm(){	
+		C obj = new C();
+		obj.msg();	// now which msg() method would be invoked
+	}
+}

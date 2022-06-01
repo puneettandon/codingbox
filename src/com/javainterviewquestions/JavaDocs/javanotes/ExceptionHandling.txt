@@ -1,0 +1,352 @@
+Exception Handling is the mechanism to handle the runtime errors so that normal flow of the application can be maintained.
+
+Exception - An exception is an unwanted or unexpected event,which occurs during the execution of the program i.e. at runtime and disrupts the normal flow of the application.
+
+		Error vs Exception
+
+An error indicates serious problem that a reasonable application should not try to catch
+
+Exception indicates conditions that a reasonable application should try to catch.
+
+Diff exceptions are ClassNotFoundException,IOException,SQLException,RemoteException,etc.
+
+		
+			
+		Hierarchy of Java Exception Classes
+			
+      			 Object
+
+			Throwable
+	
+	Exception			Error
+
+
+	   IOException			StackOverflowError 
+	   SQLException			VirtualMachineError
+  	   ClassNotFoundException	OutOfMemoryError
+	   
+	   RuntimeException
+		ArithmeticException
+                NullPointerException
+		NumberFormatException
+		IndexOutOfBoundsException
+                   ArrayIndexOutOfBoundsException
+		   StringIndexOutOfBoundsException
+
+
+
+
+		Types of Java Exceptions
+
+	1. Checked Exception
+	2. Uncheckd Exception
+	3. Error
+
+Checked Exceptions -: are exceptions that checked at the compile time.
+
+If some code within a method throws a checked exception,then 
+the method must either handle the exception or ,
+it must specify the exception using throws keyword
+
+
+UnChecked Exceptions -: are the exceptions that are not checked at the compile time.They are checked at the runtime.
+In java exceptions under Error and RuntimeException classes are unchecked exceptions, everytime else under throwable is checked.
+
+
+Error is irrecoverable eg OutOfMemoryError, VirtualMachineError, AssertionError etc,
+
+
+
+	Java exception keywords
+try - keyword used to specify a block where we should place exception code. try block must be followed by either catch or finally. It means we can't use try block alone.
+
+catch - catch block used to handle the exception. It must be preceded by try block which means we can't use catch block alone.It can be followed by finally block later.
+
+finally - finally block is used to execute the important code of the program. It is executed whether an exception is handled or not.
+
+throw - throw keyword is used to throw an exception 
+
+throws - throws keyword is used to declare exception. It doesn't throw an exception. It specifies that there may occur an exception in the method.
+
+
+
+			How JVM handle an exception?
+
+Whenever inside a method,if an exception has occured, the method creates an object known as Exception Object and hands it off to the run-time system (JVM). 
+The exception object contains name and description of the exception, and the current state of the program where exception has occured.
+Creating the exception object and handling it to the run time system is called throwing an exception.
+There might be the list of the methods that had been called to get to the method where exception was occured. This ordered list of the methods is called Call Stack.
+
+
+
+-----------------------------------------------------------------
+
+Throwable methods - 
+
+1) addSuppressed(Throwable exception)
+2) fillInStackTrace() - Fills in the execution stack trace.
+3) getCause() - returns the cause of this throwable or null.
+4) getMessage()
+5) getStackTrace()
+6) getSuppressed()
+7) initCause(Throwable cause)
+8) printStackTrace()
+9) toString()
+
+-----------------------------------------------------------------
+
+             		throw and throws in java
+
+throw - 
+
+The throw keyword in java is used to explicitly throw an exception from a method or any block of code.
+We can throw either checked or unchecked exception.
+The throw keyword is mainly used to throw custom exception.
+
+Syntax:
+	throw Instance 
+	 Example:
+		throw new ArithmeticException("/ by zero");
+
+------------------------------------------------------------------
+
+But this exception i.e. Instance must be of type Throwable or subclass of Throwable. 
+For example : Exception is a subclass of Throwable and user defined exceptions typically extend Exception class.
+
+class ThrowExcep{
+  static void fun(){
+	try{
+		throw new NullPointerException("demo");
+	    }catch(NullPointerException e)
+	     {   SOP("inside fun()");   
+		 throw e;   // rethrowing exception 
+	     }}
+  psvm(){
+	try{   fun():    }catch(NullPointerException e){
+		SOP("in main):
+	    }}}
+
+output: 
+inside fun()
+in main
+
+-----------------------------------------------------------
+
+throws - 
+
+throws is a keyword in java which is used in the signature of mehtod to indicate that this method might throw one of the listed type exceptions. 
+The caller to these methods has to handle the exception using a try-catch block:
+Syntax: 
+	type method_name(parameters) throws exception_list
+
+
+In a program, if there is a chance of rising an exception then compiler always warn us about it and compulsorily we should handle that checked exception, otherwise we will get compile time error saying unreported exception XXX must be caught or declared to be thrown. 
+To prevent this compile time error we can hanle the exception in two ways : 
+1. By using try catch 
+2. By using throws keyword.
+
+
+
+----------------------------------------------------------------
+
+Important points to remember about throws keyword:
+
+throws keyword is required only for checked exception and usage of throws keyword for unchecked exception is meaningless.
+throws keyword is required only to convince compiler and usage of throws keyword does not prevent abnormal termination of program.
+By the help of throws keyword we can provide information to the caller of the method about the exception.
+
+
+
+-------------------------------------------------------------------------------------
+
+		Java Finally block 
+
+Java finally block is a block that is used to execute important code such as closing connection,stream,closing file etc. Basically "cleanup" code.
+Java finally block is always executed whether exception is handled or not.
+Java finally block follows try or catch block.
+
+Note: If you don't handle exception,before terminating the program,JVM executes finally block(if any).
+
+For each try block there can be zero or more catch blocks, but only one finally block.
+
+The finally block will not be executed if program exit(either by calling System.exit() or by causing a fatal error that causes the process to abort).
+
+
+-------------------------------------------------------------------------------------
+
+	Exception Handling with MethodOverriding in Java
+
+There are many rules if we talk method overriding with exception handling. The rules are as follows:
+
+If the superclass method does not declare an exception
+	If the superclass method does not declare an exception, subclass overriden method cannot declare the checked exception but it can declare unchecked exception
+
+If the superclass method declares an exception
+	If the superclass method declare an exception,subclass overriden can declare the same ,subclass exception, or no exception but cannot declare the parent exception.
+
+	If the superclass method does not declare an exception
+
+
+import java.io.*;  
+class Parent{  
+  void msg(){System.out.println("parent");}  
+}  
+  
+class TestExceptionChild extends Parent{  
+  void msg()throws IOException{  
+    System.out.println("TestExceptionChild");  
+  }  
+  public static void main(String args[]){  
+   Parent p=new TestExceptionChild();  
+   p.msg();  
+  }  
+}  
+
+output: Compile time error
+
+import java.io.*;  
+class Parent{  
+  void msg(){System.out.println("parent");}  
+}  
+  
+class TestExceptionChild1 extends Parent{  
+  void msg()throws ArithmeticException{  
+    System.out.println("child");  
+  }  
+  public static void main(String args[]){  
+   Parent p=new TestExceptionChild1();  
+   p.msg();  
+  }  
+}  
+
+output: child
+
+
+	If the superclass method declares an exception
+
+Example in case subclass overridden method declares parent exception
+
+import java.io.*;  
+class Parent{  
+  void msg()throws ArithmeticException{System.out.println("parent");}  
+}  
+  
+class TestExceptionChild2 extends Parent{  
+  void msg()throws Exception{System.out.println("child");}  
+  
+  public static void main(String args[]){  
+   Parent p=new TestExceptionChild2();  
+   try{  
+   p.msg();  
+   }catch(Exception e){}  
+  }  
+}  
+
+output: compile time error
+
+Example in case subclass overridden method declares same exception
+
+import java.io.*;  
+class Parent{  
+  void msg()throws Exception{System.out.println("parent");}  
+}  
+  
+class TestExceptionChild3 extends Parent{  
+  void msg()throws Exception{System.out.println("child");}  
+  
+  public static void main(String args[]){  
+   Parent p=new TestExceptionChild3();  
+   try{  
+   p.msg();  
+   }catch(Exception e){}  
+  }  
+}  
+
+output: child
+
+
+
+Example in case subclass overridden method declares subclass exception
+import java.io.*;  
+class Parent{  
+  void msg()throws Exception{System.out.println("parent");}  
+}  
+  
+class TestExceptionChild4 extends Parent{  
+  void msg()throws ArithmeticException{System.out.println("child");}  
+  
+  public static void main(String args[]){  
+   Parent p=new TestExceptionChild4();  
+   try{  
+   p.msg();  
+   }catch(Exception e){}  
+  }  
+}  
+
+output: child
+
+
+Example in case subclass overridden method declares no exception
+import java.io.*;  
+class Parent{  
+  void msg()throws Exception{System.out.println("parent");}  
+}  
+  
+class TestExceptionChild5 extends Parent{  
+  void msg(){System.out.println("child");}  
+  
+  public static void main(String args[]){  
+   Parent p=new TestExceptionChild5();  
+   try{  
+   p.msg();  
+   }catch(Exception e){}  
+  }  
+}  
+
+
+output: child
+
+
+
+------------------------------------------------------------------------------------
+
+
+	Java Custom Exception
+
+If you are creating your own exception that is known as custom exception. Java custom exceptions are used to customize the exception according to user need.
+By the help of custom exception, you can have your own exception and message.
+
+class InvalidAgeException extends Exception{
+	InvalidAgeException(String s){
+		super(s);
+	}
+}
+
+class TestCustomException1{  
+  
+   static void validate(int age)throws InvalidAgeException{  
+     if(age<18)  
+      throw new InvalidAgeException("not valid");  
+     else  
+      System.out.println("welcome to vote");  
+   }  
+     
+   public static void main(String args[]){  
+      try{  
+      validate(13);  
+      }catch(Exception m){System.out.println("Exception occured: "+m);}  
+  
+      System.out.println("rest of the code...");  
+  }  
+}  
+
+
+output: Exception occured: InvalidAgeException:not valid
+       rest of the code...
+
+
+
+
+
+
+

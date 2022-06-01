@@ -1,0 +1,159 @@
+        			static
+
+The static keyword in java is used for memory management mainly.
+
+We can apply java static keyword with variables,methods,blocks and nested class. 
+
+The static can be:
+1. variable (also known as a class variable)
+2. method (also known as a class method)
+3. Block
+4. Nested class
+
+--------1) Java static variable
+If you declare any variable as static, it is known as static variable.
+The static variable can used to refer to common property of all objects (which is not unique for each object), for example the company name of employees, etc..........
+
+The static variable gets memory only once in the class area at the time of class loading.
+
+
+java static property is shared to all objects.
+
+-----------------------------------------------------
+
+program of the counter without static variable
+class Counter{
+
+int count = 0;	// will get memory each time when instance is created
+// static int count = 0;
+
+Counter(){ count++;  SOP(count);   }
+psvm(){ Counter c1 = new Counter();  
+	Counter c2 = new Counter();
+        Counter c3 = new Counter();    }
+
+output: 
+without static       with static
+1			1
+1			2
+1			3
+
+-------------------------------------------------------------
+
+2) Java static method
+If you apply static keyword with any method,it is known as static method.
+A static method belongs to the class rather than object of a class.
+A static method can be invoked without the need for creating an instance of a class.
+A static method can access static data member and can change value of it.
+
+--------------------------------------------------------------
+
+Restrictions for static method
+1. The static method cannot use non static member or non static mehtod directly.
+2. this and super cannot be used in static context
+
+class A{
+int a= 40;// non static
+psvm(){	SOP(a);}}
+
+output: Compile time error
+
+..............................................................
+Why is the java main method static?
+
+Object is not required to call static method.If it were non-static ,JVM creates an object first then call main() method that will lead to problem of extra memory allocation.
+
+--------------------------------------------------------------
+
+		Java Static block
+It is used to initialize the static data member
+It is executed before the main method at the time of class loading.
+
+----------------------------------------------------------------
+ Can we execute a program without main() method?
+Ans) No, one of the ways was the static block, but it was possible till JDK 1.6. Since JDK 1.7, it is not possible to execute a java class without the main method.
+
+class A3{  
+  static{  
+  System.out.println("static block is invoked");  
+  System.exit(0);  
+  }  
+}  
+output: 
+static block is invoked
+
+
+Since JDK 1.7 and above, output would be:
+
+Error: Main method not found in class A3, please define the main method as:
+   public static void main(String[] args)
+or a JavaFX application class must extend javafx.application.Application
+--------------------------------------------------------
+
+
+		Static Blocks
+
+Java supports a special block, called static block (also called static clause) which can be used for static initializations of a class.
+
+This code inside static block is executed only once:the first time you make an object of that class or the first time you access a static member of that class (even if you never make an object of that class).
+
+Example - : 
+
+class Test { 
+    static int i; 
+    int j; 
+      
+    // start of static block  
+    static { 
+        i = 10; 
+        System.out.println("static block called "); 
+    } 
+    // end of static block  
+} 
+  
+class Main { 
+    public static void main(String args[]) { 
+  
+        // Although we don't have an object of Test, static block is  
+        // called because i is being accessed in following statement. 
+        System.out.println(Test.i);  
+    } 
+} 
+
+Output:
+static block called
+10
+
+-----------------------------------------------------------
+
+
+Also, static blocks are executed before constructors
+
+class Test { 
+    static int i; 
+    int j; 
+    static { 
+        i = 10; 
+        System.out.println("static block called "); 
+    } 
+    Test(){ 
+        System.out.println("Constructor called"); 
+    } 
+} 
+
+class Main { 
+    public static void main(String args[]) { 
+  
+       // Although we have two objects, static block is executed only once. 
+       Test t1 = new Test(); 
+       Test t2 = new Test(); 
+    } 
+} 
+
+Output:
+static block called
+Constructor called
+Constructor called
+
+What if we want to execute some code for every object?
+We use Initializer Block in Java - init block

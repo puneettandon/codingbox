@@ -1,0 +1,142 @@
+			Hibernate Mapping
+
+Most of the times,database tables are associated with each other.There are many forms of association - 
+
+one to one 
+one to many
+many to many
+
+
+These can be further divided into unidirectional and bidirectional mappings.
+
+------------------------------------------------------------------------------
+
+		Hibernate One to One Mapping Example
+
+First of all we would need to setup One to One mapping in database tables.
+We will create two tables for our example
+1) Transaction 		2) Customer
+
+Both of these tables will have one to one mapping
+
+
+Transaction will be the primary table and 
+we will use foreign key in Customer table for one to one mapping
+
+No foreign key will be created in the primary table
+
+
+	Transaction    ------------------------->   	Customer
+ 	     txn_id 					     txn_id 
+	     txn_date					     cust_name
+	     txn_total					     cust_email	
+							     cust_address
+
+
+
+-----------------------------------------------------------------------
+
+Hibernate One to One Mapping Annotation Example Model Classes
+
+@Entity
+@Table(name="Transaction")
+public class Txn1{
+	
+	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@Column(name="txn_id")	
+	private long id;
+	@Column(name="txn_date")
+	private Date date;
+	@Column(name="txn_total")
+	private double total'
+
+	@OneToOne(mappedBy="txn")
+	@Cascade(value= CascadeType.SAVE_UPDATE)
+	private Customer1 customer;
+	
+}
+
+
+@Entity
+@Table(name="Customer")
+public class Customer1{
+	
+	@Id
+	@Column(name="txn_id",unique=true,nullable=false)
+	@GeneratedValue(generator="gen")
+	@GenericGenerator(name="gen",strategy="foreign",parameters={@Parameter(name="property",value="txn")})
+	private long id;
+	@Column(name="cust_name")
+	private String name;
+	@Column(name="cust_email")	
+	private String email;
+	@Column(name="cust_address")
+	private String address;
+
+	@OneToOne
+	@PrimaryKeyJoinColumn
+	private Txn1 txn;	
+}
+
+
+--------------------------------------------------------------------------
+
+Example -2 
+
+@Entity
+@Table(name="emp220")
+public class Employee{
+
+	@Id
+	@GeneratedValue(strategy=GenerationType.AUTO
+	@PrimaryKeyJoinColumn
+	private int employeeId;
+
+	private String name,email;
+	
+	@OneToOne(targetEntity=Address.class,cascade=CascadeType.ALL)
+	private Address address;
+	
+
+}
+
+@Entity
+@Table(name="address220")
+public class Address{
+	
+	@Id
+	@GeneratedValue(strategy=GenerationType.AUTO)
+	private int addressId;
+	private String addressLine1,city,state,country;
+	private int pincode;
+	
+	@OneToOne(targetEntity=Employee.class)
+	private Employee employee;
+}
+
+Store.java
+
+Employee e1 = new Employee();
+e1.setName("Ravi");
+e1.setEmail(".........");
+
+Address add1 = new Address()l
+add1.setAddressLine1("lllllllllll");
+add1.setCity("Ghaziabad");
+add1.setState("UP");
+add1.setCountry("India");
+add1.setPincode(1234);
+
+e1.setAddress(add1);
+add1.setEmployee(e1);
+
+Output 
+Employee: 
+employeeId 	email 		Name   			 Address
+1  		ravi@gmail    RaviMalik  	   	    2
+
+Address
+AddressId    addrssline1    city country pincode state 
+2		fafasf      Rtk	  Ind     124001   HR
+

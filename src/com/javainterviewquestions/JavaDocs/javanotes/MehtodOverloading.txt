@@ -1,0 +1,76 @@
+
+Method Overloading: When there are multiple functions with same name but different parameters then these functions are said to be method overloading.
+- functions can be overloading by change in number of arguments or/ and change in type of arguments. 
+
+
+- Method Overloading: changing no. of arguments
+
+	int add(int a,int b){return a+b;}
+	int add(int a,int b,int c){return a+b+c};
+
+- Method Overloading: changing data type of arguments
+
+	int add(int a,int b){return a+b;}
+	double add(double a,double b){return a+b;}
+
+- Why method overloading is not possible by changing the return type of method only?
+
+In java, method overloading is not possible by changing the return type of the method only because of ambiguity.
+
+
+	int add(int a,int b){return a+b;}
+	double add(int a,int b){return a+b;}
+
+
+call->  add(11,11) // ambiguity
+
+compile time error : method add(int,int ) is already defined.
+
+Compile time error is better than runtime error.
+
+
+................
+
+Can we overload java main() method?
+
+Yes, by method overloading. But JVM calls main() method with string array as args only.
+
+
+----------------------
+
+Method Overloading and Type Promotion
+
+One type is promoted to another implicity if no matching datatype is found.
+
+case1
+	sum(int a,long b)
+	sum(int a,int b,int c)
+
+call->	sum(20,20)   // now second literal will be promoted to long.
+
+
+case2 
+	sum(int a,int b)
+	sum(long a,long b)
+
+call->	sum(20,20) //now int arg sum() method gets invoked -> sum(int a,int b) 
+
+case 3
+
+	sum(int a,long b)
+	sum(long a,int b)
+
+call->	sum(20,20) //now ambiguity
+//compile time error
+
+
+-----------------------------------
+Can we overload static methods?
+Yes we can example main() method
+
+Can we overload methods that differ only by the static keyword?
+we cannot overload two methods in java if they differ only by static keyword
+//compiler error : cannot redefine foo()
+
+static void foo()
+void foo()// compiler error

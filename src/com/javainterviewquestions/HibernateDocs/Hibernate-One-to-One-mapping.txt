@@ -1,0 +1,287 @@
+			Hibernate One-to-One mapping
+
+An instructor can have an "instructor detail" entity.
+	instructor ---------------------> instructor_detail
+
+
+	       Unidirectional use case of one-to-one mapping
+	__________________________________________________________
+
+
+		Instructor------------------>Instructor-detail
+
+
+Development process - one-to-one
+
+
+1. Define database tables
+2. Create InstructorDetail class
+3. Create Instructor class 
+4. create Main App
+
+
+
+1. Define database tables
+
+ table: instructor_detail
+	id
+	youtube_channel
+	hobby
+
+create table instructor_detail('id' int(11) Not Null Auto_Increment,
+			       'youtube_channel' varchar(128) Default NULL,
+		 	       'hobby' varchar(45)  Default Null ,
+	                       Primary Key ('id')
+			      );
+
+
+ table: instructor
+	id 
+	first-name
+	last-name
+	email
+	instructor_detail_id 
+ 
+create table instructor('id'...................
+			'first-name'............
+			'last-name'.............
+			'email'.................
+			'instructor-detail-id............. this is foreign key
+			Primary Key('id')
+		       );
+
+
+    Foreign key 
+Links table together
+A field in one table that refers to primary key in another table.
+
+Table: Instructor
+id	first_name	last_name	instructor_detail_id <---foreign key
+1	Chad		Darby		100	
+2	Madhu		Patel		200
+
+		
+		Table: Instructor_Detail
+		id	youtube_channel		hobby
+		100	luv2code.com/youtube	luv2code
+		200	www.youtube.com		Guitar
+
+
+
+
+	Defining Foreign Key
+
+Create Table instructor(
+		.............
+	Constraint	'Fk_detail' foreign key('instructor_detail_id')
+	References 'instructor_detail'('id')
+	);
+
+
+	More on Foreign Key
+
+Main purpose is to preserve relationship between tables
+  Referentail Integrity
+
+Prevents operatoins that would destroy relationship
+
+Ensures only valid data is inserted into foreign key column
+  can only contain valid reference to primary key in othe table
+
+-------------------------------------------------------------------------
+
+2. Create InstructorDetail class
+
+@Entity
+@Table(name="instructor_detail")
+public class InstructorDetail{
+	
+	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@Column(name="id")
+	private int id;
+
+	@Column(name="youtube_channel")
+	private String youtubeChannel
+
+	@Column(name="hobby")
+	private String hobby;
+
+	// constructor
+	// getters/setters	
+}
+
+
+3. Create Instructor class
+
+@Entity
+@Table(name="instructor")
+public class Instructor{
+	
+	@Id
+	@GeneratedValue(strategy=GenerationType.Identity)
+	@Column(name="id")
+	private int id;
+	
+	@Column(name="first_name")
+	private String firstName;
+
+	@Column(name="last_name")
+	private String lastName;
+
+	@Column(name="email")
+	private String email;
+
+	@OneToOne
+	@JoinColumn(name="instructor_detail_id")       <-----  For OneToOne mapping
+	private InstructorDetail instructorDetail;
+
+	//constructor,getter/setters	
+}
+
+
+What we doing here is :
+ We are telling hibernate for instructor_detail we have a join column called instructor_detail_id that instructor_detail_id they find in instructor table.
+Then use that information hibernate , hibernate find the instructor_detail_id and maps the data accordingly.
+
+---------------------------------------------------------------------------------
+
+
+				Entity Lifecycle
+
+
+operations			description
+
+Detach		If entity is detached, it is not associated with a hibernate session
+
+Merge 		If instance is detached from session,then merge will rettach to 		session
+
+Persist		Transitions new instances to managed state.Next flush/commit will 			save in db
+
+Remove 		Transitions managed entity to be removed. Next flust/commit will 		delete from db
+
+Refresh		Reload/synch object with data from db.Prevents stale data
+
+
+-----------------------------------------------------------------------------------
+
+			Entity Lifecycle - session method calls
+
+				new/transient
+			   /			\
+			/   save/persist 	 \
+		     /	   rollback/new           \-----------------------
+  		   /                                                      \
+  	  ----	persistent   			-------delete/remove------> removed
+ refresh |---->managed					
+		\
+ 		 \  
+		commit/rollback/close	
+		  \    merge
+		    Detached
+
+
+
+----------------------------------------------------------------------------------
+
+
+	Cascade - Apply the same operation to related entities.
+
+
+		Instructor --------------------> Instructor_detail
+
+If we save our instructor ,it will also save our instructor_detail
+
+
+
+
+		@OneToOne =======Cascade Types
+
+   PERSIST  		If entity is persisted/saved,related entity will also be 		        persisted
+
+    when instructor is saved, then the related item instructor_detail will also be saved.
+
+  REMOVE 		If entity is removed/deleted,related entity will also be 			deleted
+
+you delete the instructor , related instructor_detail item will also be deleted.
+
+  REFRESH		If entity is refreshed, related entity will also be 			refreshed
+
+  DETACH		If entity is detached(not associated with 			session),then related entity will also be detached		
+
+  MERGE 		If entity is merged,related entity will also be 					merged
+
+  ALL 		        All of above cascade types
+
+
+
+----------------------------
+
+	Configure Cascade Type
+
+	@OneToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name="instructor_detail_id")
+	private InstructorDetail instructorDetail;
+
+	all the operations we apply to our entity like instructor cascades our related entity instructor_detail saving ,,,,deleting,,,,and so on
+
+***By default no operations are cascaded.
+
+-------------------------------------------------------------------------------
+	Configure mutlitple cascade types
+
+	@OneToOne(cascade = { CascadeType.DETACH,
+			      CascadeType.MERGE,
+			      CascadeType.PERSIST,
+			      CascadeType.REFRESH,
+		 	      CascadeType.REMOVE
+			    })
+
+	
+
+4. Create main app
+
+	main()	{
+
+			Instructor tempInstructor = new Instructor("...........");
+
+			InstructorDetail tempInstructDetail = new InstructorDetail(".....");
+			tempInstructor.setInstructorDetail(tempInstructDetail);
+
+			session.beginTransaction();
+
+			session.save(tempInstructor);   // here cascade operation will be performed  ...........on saving tempInstructor .....tempInstructDetail will be saved automatically
+			
+			session.getTransaction().commit();
+	}	
+
+
+
+------------------------------------------------------------------------------------
+
+			Hibernate Bidirectional One-to-One
+
+When we require Bidirectional
+
+>> If we load an instructordetail
+   Then we would like to get the associated instructor 
+   Can't do this current uni-directional relationship
+
+In earlier case(unidirectional) instructor is having the reference of instructordetail, So from instructor we get the instructordetail reference and we can fetch data.Here we can move from instructor to instructor_detail only.
+		instructor ---------->instructor_detail
+
+
+
+	Bidirectional relationship is the solution
+
+So we can with instructor_detail and make it back to the instructor
+
+		instructor ------------> instructor_detail
+			   <------------
+Here we can start from both sides --- instructor to instructor_detail or instructor_detail to instructor
+
+
+
+
+
+

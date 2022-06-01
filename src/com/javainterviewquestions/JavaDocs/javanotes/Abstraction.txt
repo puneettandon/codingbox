@@ -1,0 +1,77 @@
+			Abstract class in Java
+
+
+A class which is declared with abstract keyword is known as an abstract class in java.It can be abstract and non-abstract methods(method with the body).
+
+
+			Abstraction in Java
+
+
+Abstraction is a process of hiding the implementation details and showing only functionality to the user.
+Another way, it shows only essential things to the user and hides the internal details, for example, sending an sms where you type the text and send the message. You don't know the internal processing about the message delivery.
+
+
+Abstraction let you focus on what the object does instead of how it does it.
+
+
+	Ways to achieve abstraction 
+
+ 2 ways to achieve 
+1. Abstract class (0 to 100%)
+2. Interface(100%)
+
+
+		Abstract class in Java 
+
+A class which is declared as abstract is known as abstract class.It can have abstract and non-abstract methods.It needs to be extended  and its method implemented.
+It cannot be instantiated.
+
+> An abstract class must be declared with an abstract keyword.
+> It can have abstract and non abstract methods.
+> It cannot be instantiated.
+> It can have contructors and static methods also.
+> It can have final methods which will force the subclass not to change the body of the method.
+
+
+abstract class Figure {
+    double dim1;
+    double dim2;
+    Figure(double a, double b) {
+    dim1 = a;
+    dim2 = b;
+  }
+// area is now an abstract method
+    abstract double area();
+}
+class Rectangle extends Figure {
+    Rectangle(double a, double b) {
+    super(a, b);
+  }
+    // override area for rectangle
+    double area() {
+    System.out.println("Inside Area for Rectangle.");
+    return dim1 * dim2;
+  }
+}
+class Triangle extends Figure {
+    Triangle(double a, double b) {
+    super(a, b);
+  }
+    // override area for right triangle
+   double area() {
+   System.out.println("Inside Area for Triangle.");
+   return dim1 * dim2 / 2;
+  }
+}
+class AbstractAreas {
+    public static void main(String args[]) {
+    // Figure f = new Figure(10, 10); // illegal now
+    Rectangle r = new Rectangle(9, 5);
+    Triangle t = new Triangle(10, 8);
+    Figure figref; // this is OK, no object is created
+    figref = r;
+   System.out.println("Area is " + figref.area());
+   figref = t;
+   System.out.println("Area is " + figref.area());
+  }
+}

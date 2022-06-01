@@ -1,0 +1,26 @@
+				Java I/O 
+
+
+Java I/O (Input and Output) is used to process the input and produce the output.
+Ability of connecting program with input and output
+Java uses the concept of a stream to make I/O operation fast.
+We can perform file handling in java by Java I/O API.
+
+Stream - A stream is a sequence of data. In Java, a stream is composed of bytes.
+
+In java, 3 streams are created for us automatically. All these streams are attached with the console.
+
+1. System.out: output
+2. System.in: input
+3. System.err: error
+
+	
+	OutputStream vs InputStream
+OutputStream
+- Java application uses an output stream to write data to a destination;it may be file,an array,peripheral device or socket.
+
+InputStream
+- Java application uses an input stream to read data from a source;it may be a file,an array,a peripheral device or socket.
+
+
+	OutputStream Class
