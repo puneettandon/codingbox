@@ -1,0 +1,454 @@
+		Saving Without Hibernate
+
+> JDBC Database Configuration
+> The Model object
+> Service method to create the model object
+> Database design
+> DAO method to save the object using SQL queries
+
+
+		The Hibernate way
+
+> JDBC Database configuration - Hibernate Configuration
+> The Model object - Annotations
+> Service method to create the model object - use the Hibernate API
+> Database design - Not needed!
+> DAO method to save the object using SQL queries - Not needed!
+
+---------------------------------------------------------------
+
+		Hibernate Configuration file 
+
+--  hibernate.cfg.xml 
+	copy from hibernate jars for basic configuration
+
+	
+	<hibernate-configuration>
+		<session-factory>
+		  <property 	name="connection.driver_classs">org.Postgresql.Driver
+		  </property>
+		  <property
+	name="connection.url">jdbc.............
+		  </property>	
+		  <property
+	name="connection.username">sa
+		  </property>
+		  --------
+
+		  <property 	name="connection.pool_size">1
+		  </property>
+
+		  <property 
+	name="dialect">org.hibernate.dialect.H2Dia......
+		  </property>
+		
+		  <property 
+	name="show_sql">true
+		  </property>
+
+		  <property
+	name="hbm2ddl.auto">create
+		  </property>
+
+		  <property
+	name="cache.provider_class">NoCacheProvider
+		  </property>
+	
+		  <mapping class="UserDetails"/>
+
+		</session-factory>
+	</hibernate-configuration>
+
+---------------------------------------------------------------
+
+
+	Create Model Class
+
+@Entity
+public class UserDetails{
+
+	@Id
+	private int userId;
+	private String username;
+
+	//getter and setter
+	
+	public void setUserId(int userId){
+		this.userId = userId;
+	}
+
+	public void setUsername(String username){}
+	
+
+}
+
+
+
+@Entity - treat as an entity
+@Id - serve as primary key
+
+-------------------
+
+/////		Using the Hibernate API 
+
+
+> Create a Session Factory 
+> Create a session from the session factory
+> Use the sesion to save the model
+
+	HibernateTest.java
+
+// Service method to create the model object - use the Hibernate API
+
+
+public class HibernateTest{
+
+	psvm(){
+	
+		UserDetails user = new UserDetails();
+		user.setUserId(1);
+		user.setUserName("FirstUser");
+
+		SessionFactory sf = 
+	new Configuration().configure().buildSessionFactory();
+
+		Session session = sf.openSession();
+
+		Transaction t = session.beginTransaction();
+
+		sesssion.save(user);
+
+		session.getTransaction.commit();
+
+			
+	}
+
+}
+
+//insert into userDetails(userName,userId) values(? ?);
+
+-----------------------------------------------------------------
+
+		Hibernate Annotations
+
+@Entity(name="User_Details") // custom name for table
+@Column(name="User_Name") // custom name for column
+@Column(name="User_Id")
+
+
+**we can put annotations at variable name or getter method
+
+
+--------------------------------------------
+
+
+@Table(name="UserDetails") // name of the table
+changes name of table only not the entity
+
+-----------------------------------------------------
+
+we can change the configuration of fields like datatype
+
+@Basic - has two attributes, optional and fetch
+	optional - whether allows null
+	fetch - property should be lazy or eager feteched.
+
+	optional = false,fetch = FetchType.Lazy
+
+@Column - applied to the database columns and @Basic applied to JPA entities
+
+@Transient - if don't want to persist any column
+
+@Temporal(TemporalType.DATE)// @Temporal(TemporalType.Time)
+private Date joinedDate;
+
+@Lob
+
+---------------------------------------------------------------
+
+		Fetch the user object 
+
+	user = null;
+
+	Session s = sf.openSession();
+	s.beginTransaction();
+
+	user = (UserDetail)session.get(UserDetails.class,1);
+	
+	
+-----------------------------------------------------------------
+
+
+			PrimaryKey
+
+Natural Key - emailId
+
+Surrogate Key - userId 
+
+@Id
+@GeneratedValue
+
+by default - 'hibernate_sequence'
+
+@GeneratedValue(strategy=GenerationType.Auto/Identity/Sequence/Table)
+
+-----------------------------------------------------------------
+
+
+		Value Types and Embedding Objects
+
+
+User -  Id Name Address Phone DateOfBirth
+
+	
+Address is user-class 
+
+Address - Street City State Pincode
+
+
+	Table 
+
+Id Name       Street City State Pin      Phone DOB
+
+--------This option works fine in case of Value Objects 
+
+
+User is Entity object 
+Value Object - is an object that has data that needs to be saved in database but it doesnot have meaning in itself.
+
+Address of this user
+
+Address doesn't make sense without user
+
+Address have value for user 
+
+------------
+
+@Embeddable // to mark it as value object // and needs to embedd in some other object
+class Address{
+
+private String street;
+-----   String city;
+	String state;
+	String pincode;
+
+// setter and getter 
+}
+
+
+
+class User
+{
+@Embedded 
+Address adddress;
+
+// setter getter
+}
+
+
+Address addr = new Address();
+add.setStreet().............
+
+
+user.setAddress(addr);
+
+
+........................................
+
+
+
+			Caching in Hibernate
+
+
+By default provide first level cache - in Session
+
+Second level cache 
+ 	> Across sessions in an application
+
+	> Across applications
+
+	> Across cluster
+	
+	
+
+	First Level Cache
+
+-----------
+
+
+	SessionFactory sf = ..........
+	Session s = sf.openSession();
+	s.beginTransaction()
+
+	UserDetails user = (UserDetails) s.get(UserDetails.class,1);
+	
+	u.setUserName("updated user");
+	
+	UserDetails user2 = (UserDetails) s.get(UserDetails.class,1)
+
+
+	s.getTransaction().commit();
+	s.close();
+//  One Select query 
+//  One update query
+-------------------
+// New Session 
+	Session s2 = sf.openSession();
+	s2.beginTransaction();
+
+	UserDetails user2 = (UserDetails)s2.get(UserDetails.class,1);
+
+// Two Select query as new session is there 
+no second level cache implemented 
+
+--------------------
+
+
+
+	Implement Second level Cache in Hibernate Conf File
+
+<property name="cache.provider_class">EhCacheProvider</property>
+
+<property name="cache.use_second_level_cache">true</property>
+
+---------------------------------------------------------
+
+
+@Entity
+@Cacheable
+@Cache(usuage=CacheConcurrencyStrategy.READ_ONLY)
+class UserDetails
+{
+
+}
+
+// only Select will run as of Second level cache
+
+------------------------------------------------------------------
+
+
+
+
+		Proxy Objects  and Eager and Lazy Fetch
+
+
+
+
+
+----------------------------------------------------------
+
+			Mapping
+
+	One to One Mapping
+	
+UserDetails.java
+
+@Entity
+@Table(name = "User_Details")
+public class UserDetails{
+
+	@Id @GeneratedValue(strategy=GenerationType.AUTO)
+	private int userId;
+	private String userName;
+	@OneToOne
+	@JoinColumn(name="Vehicle_Id")
+	private Vehicle vehicle;
+
+	// setter and getter	
+
+}
+
+Vehicle.java
+
+@Entity
+public class Vehicle{
+	
+	@Id @GeneratedValue..........
+	private int vehicleId;
+	private String vehicleName;
+
+	//setter and getter
+}
+
+
+// create new mapping in hibernate.cfg.xml
+<mapping class="Vehicle"/>
+
+----------------
+
+HibernateTest.java
+
+psvm()
+{
+	UserDetails user = new UserDetails();
+	user.setUserName("First User");
+	Vehicle vehicle = new Vehicle();
+	vehicle.setVehicleName("Car");
+	
+	user.setVehicle(vehicle);
+
+	session.save(user);  session.save(vehicle);
+}
+
+insert into User_Details(username,vehicle vehicleId,userId) values(? ? ?)
+insert into Vehicle (vehicleName,vehicleId) values (? ? )
+update User_Details set userName=?,vehicle_vehicleId=? where userId=?
+
+
+
+---------------------------------------------------------
+
+		OneToMany
+
+UserDetails.java
+
+@OneToMany
+@JoinTable(name="User_Vehicle",joinColumns=@JoinColumn(name="User_Id"),inverseJoinColumns=@JoinColumn(name="Vehicle_Id")
+private Collection<Vehicle> vehicle = new ArrayList<Vehicle>();
+
+HibernateTest.java
+
+UserDetails user = new UserDetails();
+user.setUserName("First User");
+
+Vehicle v1 =new Vehicle();
+v1.setVehicleName("Car");
+
+Vehicle v2 = new Vehicle();
+v2.setVehicleName("Jeep");
+
+user.getVehicle.add(v1);
+user.getVehicle.add(v2);
+
+session.save(user);	session.save(v1);	session.save(v2);
+
+-------------------
+
+insert into User_details (username_userId) values(? ?)
+insert into Vehicle( vehname,vehiid) values
+insert into vehicle(vehname,vehiid) values  
+
+insert into user_details_vehicle (user_details_user_id ,vehicle_vehicle_id) values(    )
+insert into user_details_vehicle(user_details_user_id,vehicle_vehicle_id) values( ) 
+
+----------------------------
+
+
+	ManyToOne
+
+@Entity
+public class Vehicle
+	
+	int vehicleId;
+	String vehicleName;
+
+	@ManyToOne
+	UserDetails user;
+
+HibernateTest.java	
+v1.setUser(user);
+v2.setUser(user);
+
+
+-------------
+

@@ -1,0 +1,18 @@
+			TreeSet
+
+TreeSet is one of the most important implementations of the SortedSet interface in java that uses a tree for storage.
+
+The ordering of the elements is maintained by a set using their natural ordering whether or not an explicit comparator is provided.
+
+This must be consistent with equals if it is to correctly implement the Set interface. 
+It can also be ordered by a comparator provided at set creation time.
+
+TreeSet implements the SortedSet interface so duplicate values are not allowed.
+Objects in a TreeSet are stored in sorted and ascending order.
+TreeSet does not preserve the insertion order of elements but elements are sorted by keys.
+TreeSet does not allow to insert Heterogenous objects. It will throw ClassCastException at runtime if trying to add heterogenous objects.
+TreeSet serves as an excellent choice for storing large amounts of sorted informatiion which are supposed to be accessed quickly because of its faster access and retrieval time.
+
+Firstly,insertion of null into a TreeSet throws NullPointerException because while insertion of null ,gets compared to the existing elements and null cannot be compared to any value.
+
+TreeSet class internally uses TreeMap to store elements.

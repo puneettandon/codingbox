@@ -1,0 +1,40 @@
+			Method Overriding
+
+It occurs when a derived class has a definiton for one of the member functions of the base class.That base function is said to be overriden.
+
+If subclass has the same method class as declared in the parent class,it is known as method overriding in java.
+
+or 
+If a child class provides the specific implementation of the method that has been declared by one of the parent class, it is known as method overriding.
+
+- use to achieve runtime polymorphism.
+
+-----------------
+	Rules
+
+1. method must have the same name as in the parent class.
+2. method must have the same parameter as in the parent class.
+3. must be as IS-A relationship(inheritance).
+
+Example: 
+ 
+class Vehicle
+{
+	void run(){}
+}
+class Bike extends Vehicle
+{
+	void run(){}	//provides specific implementation
+}
+
+-----------------------------------------------
+
+Can we override static method?
+No, static method cannot be overriden. we can declare static methods with same signature in subclass,but it is not considered overriding as there won't be any run-time polymorphism.
+If a derived class defined a static method with same signature as static method in base class, the method in the derived class hides the method in the base class.
+
+-------------------------
+
+In a subclass ,we can overload the methods inherited from the superclass. 
+
+

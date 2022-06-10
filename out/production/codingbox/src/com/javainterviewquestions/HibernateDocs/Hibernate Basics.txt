@@ -1,0 +1,55 @@
+			Hibernate 
+
+- An ORM tool 
+- Used in the data layer of the applications to persist application data into database
+- Implements JPA
+
+
+----------------------------------------------------------------
+
+		The Problem hibernate is trying to solve - 
+
+User Class
+ID
+Name 
+Address
+Phone 
+Date of Birth
+
+5 users object  in memory
+
+Data table - for all user class fields 
+
+	Table User - corresponds to class Name 	
+	ID 	Name 	Address	  Phone   DOB
+
+columns corresponds to fields of User class 
+
+Object at class level but not at table or database level
+
+So we class fields needs to be converted to columns 
+And the way we convert is by using some boilerplate code.
+Which takes value each of these properties and maps it to SQL query
+So need to convert each object to SQL query for saving 
+and fetching we have to convert each record set into object.
+
+--------------------------------------------------------------  
+
+	The Problem 
+
+- Mapping member variables to columns 	
+- Mapping Relationship ( user object has reference of Address object)
+- Handling data types (eg. converting boolean to char or boolean to integer as database don't have boolean datatype)
+- Managing changes to object state
+
+
+---------------------------------------------------------------
+
+	Object 					Relational	
+			Mapping
+
+
+maps gap b/w object and tables
+
+
+ 

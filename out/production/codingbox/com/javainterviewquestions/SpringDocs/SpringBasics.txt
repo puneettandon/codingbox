@@ -1,0 +1,204 @@
+		Spring Framework
+
+Spring is a lightweight framework. 
+
+can be thought of as framework of frameworks because it provides support to various frameworks such as Struts,Hibernate,EJB,JSF etc.
+
+Comprises several modules such as IOC,AOP,DAO,Context,ORM,Web mvc,etc
+
+--------------------------------------------------------------------------
+
+Inversion of Control(IOC) and Dependency Injection
+
+These are the design patterns that are used to remove dependency from the programming code.
+Make code easier to test and maintain
+
+class Employee{
+	Address address;
+	
+	Employee(){	address = new Address();	}
+}
+
+In such case, there is dependency between Employee and Address (tight coupling) as Employee is forced to use the same address instance. 
+
+Solution below: 
+
+In the Inversion of Control scenario , we do this something like this:
+class Employee{
+	Address address;
+	
+	Employee(Address address){	this.address = address;		}
+}
+
+Now, there is no dependency between Employee and Address because Employee is not forced to use the same address instance.It can use any address instance.
+
+Thus,IoC makes the code loosely coupled.In such case,there is no need to modify the code if our logic is moved to new environment.
+
+In Spring framework, IOC container is responsible to inject the dependency.
+We provide metadata to IOC container either by XML file or annotation.
+
+
+----------------------------------------------------------------
+Advantages of Dependency Injection
+
+ - makes the code loosely coupled so easy to maintain.
+ - make the code easy to test
+
+---------------------------------------------------------------------------------
+
+	Advantages of Spring Framework
+
+
+
+	Modules of Spring Framework
+
+Spring Core Contanier -: containes 
+	Core,Beans - provides IoC and Dependency Injection features
+       ,Context - supports internationalization(I18N),EJB,JMS,Basic Remoting
+       ,Expression Language - is an extensioon to the EL defined in JSP.It provides support to setting and getting property values,method invocation,accessing collections and indexers,named variables,logical and arithmetic operators etc.
+
+AOP - Aspects - and Instrumentation -: support aspect oriented programming implementation where you can use Advices,Pointcuts,etc to decouple the code.
+Provides support to AspectJ 
+
+Data Access/Integration  - :  JDBC, ORM, OXM, JMS, Transactions - support to database.
+
+Web(MVC /Remoting) - : Web  - Servlet - Struts - Portlet - support to web application
+Test  - provides support of testing with Junit and TestNG
+
+------------------------------------------------------------------------------
+
+		Role of IoC Container in Spring 
+ Responsible to : 
+ - create the instance(instantiate the class)
+ - configure the instance
+ - assemble the dependencies
+
+IoC container gets information from the XML file and works accordingly.
+
+Types of IoC containers : 
+
+1. BeanFactory
+2. ApplicationContext
+
+
+Difference b/w BeanFactory and ApplicationContext
+ - Both interfaces acts as the IoC container.
+ - The ApplicationContext interface is built on the top of BeanFactory interface.
+ - ApplicationContext adds extra functionality than BeanFactory such as simple integration with Spring's AOP,message resource handling,event propagation, application layer specific context(eg WebApplicationContext) for web application.
+
+So better to use ApplicationContext than BeanFactory
+
+-----------------------------------------------------------------------------
+Using BeanFactory
+
+Resource resource = new ClassPathResource("applicationContext.xml");
+BeanFactory factory = new XmlBeanFactory(resource);
+
+
+Using ApplicationContext
+
+ApplcationContext context = new ClassPathXmlApplicationContext("applicationContext.xml"); 
+
+----------------------------------------------------------------------------------
+
+	Dependency Injection
+
+The dependency injection is a design pattern that removes the dependency of the programs. In such a case we provide the information from the external source such XML file
+Two ways - 1) By Constructor 		2) By Setter 
+
+1) By Constructor 
+	<bean>
+		<constructor-arg>
+		</constructor-arg>
+	</bean
+
+	a. Injecting Primitive  and String based values
+	
+	b. Injecting Object(contained object)
+
+	c. Collection values etc.
+
+-----------------------------------------------------------------------------
+
+What is the difference between constructio injection and setter injection?
+
+Contructor Injection			Setter Injection
+No partial injection  			Partial injection
+Doesn't override the setter property    Overrides the constructor property if defined
+Creates new instance if any 		Doesn't create new instance if you 
+modification occures			change the property value
+Better for too many properties		Better for few properties
+
+
+------------------------------------------------------------------------------------
+
+	Autowiring in Spring
+
+Autowiring feature of spring framework enables you to inject the object dependency implicitly.
+It internally uses setter or construction injection.
+
+Autowiring can't used to inject primitive and string values. 
+It works with reference only.
+
+-------> Autowiring modes
+
+1) no - default autowiring mode. means no autowiring by default
+2) byName - injects the object dependency according to the name of the bean.In such case, property name and bean name must be same. It internally calls setter method.
+3) byType - inject the object dependency according to type.So property name and bean name can be different. internally calls setter method.
+4) autodetect - deprecated since Spring 3
+-------------------------------------------------------------------------
+
+		Scopes of Spring
+
+singleton - The bean instance will be created only once and same instance will be returned by the IoC container. It is the default scope.
+prototype - The bean instance will be created each time when requested.
+request - The bean instance will be created per HTTP request.
+session - The bean instance will be created per HTTP session.
+globalsession - The bean instance will be created per HTTP global session.It can be used in portlet context only.
+
+singleton scope should be used with EJB stateless session bean and prototype scope with EJB stateful session bean.
+-----------------------------------------------------------------------------------
+
+
+		Spring Framework Annotations
+
+	Core Spring Framework Annotations
+
+@Required - It applies to the bean setter method
+	    It indicates that the annotated bean must be populated at a configuration time with the required property,else it throws an exception BeanInitializationException.
+	public class Machine{
+		private Integer cost;
+		@Required
+		public void setCost(Integer cost){ this.cost = cost;	}
+}
+-----------
+@Autowired - This annotation is applied on fields,setter methods and constructors 
+	     It injects object dependency implicitly.
+	     When use @Autowired annotation,the spring container autowires the bean 	
+	     by matching data-type.
+
+@Bean: 	     It is method-level annotation. Alternative to xml <bean> tag
+	     tells the method to produce a bean to be managed by spring container.
+	     @Bean
+ 	     public BeanExample	beanExample(){	return new BeanExample();	}
+
+@ComponentScan: used when we want to scan a package for beans. It is used with the 
+		annotation @Configuration.We can also specify the base packages to 
+		scan for spring components.
+		@ComponentScan(basePackages=="com.javatpoint")
+		@Configuration
+		public class ScanComponent{   ....................	}
+
+@Configuration: It is a class level annotation. The class annotated with 		@Configuration	used by the spring containers as a source of bean 
+		definitons.	
+		
+
+@Component -   class level annotation. used to mark java class as bean.
+	       A java class annotated with @Component is found during the classpath.
+	       The spring framework pick it up and configure it in the application 	
+	       context as a spring bean.
+		@Component
+		public class Student{	......................}
+
+
+@Controller

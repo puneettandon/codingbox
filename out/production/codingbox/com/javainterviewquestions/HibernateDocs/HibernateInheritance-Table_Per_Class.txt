@@ -1,0 +1,84 @@
+		Inheritance Mapping 
+
+2) Table Per Concrete class 
+In case of table per concrete class, tables are created as per class.
+But duplicate column is added in subclass tables.
+So there are no nullable values in the table
+
+Disadvantage - duplicate columns are created in the subclass table.
+
+@Inheritance(strategy=InheritanceType.Table_Per_Class) annotation in the parent class and 
+@AttributeOverrides annotation in the subclass - defines that parent class attributes will be overriden in this class. 
+
+In table structure, parent class table columns will be added in the subclass table.
+
+---------------------------------------------------------
+Example:  
+			Employee
+			    id: int 
+			    name: String
+
+	Regular_Employee			Contract_Employee
+		salary: float				pay_per_hour:float
+		bonus: int 				contract_period:String
+
+
+-------------------------------------------------------------------------
+
+Table structure for each table will be as follows: 
+
+Employee:
+	id 	number
+	Name    varchar2
+
+Regular_Employee
+	id	number
+	Name 	varchar2
+	salary 	float
+	bonus	number
+
+Contract_Employee
+	id 	number
+	Name	varchar2
+	pay_per_hour	float
+	contract_duration  varchar2
+
+----------------------------------------------------------------------------
+
+
+Example -:
+Employee
+
+@Entity
+@Table(name="employee102")
+@Inheritance(strategy=InheritanceType.Table_Per_Class)
+class Employee{
+
+	
+}
+
+
+Regular_Employee
+
+@Entity
+@Table(name="regularemployee102")
+@AttributeOverrides({
+	@AttributeOverride(name="id", column=@Column(name="id")),
+	@AttributeOverride(name="name",column=@Column(name="name"))
+})
+class Regualar_Employee{
+
+
+}
+
+
+Contract_Employee
+@Entity
+@Table(name="contractemployee102")
+@AttributeOverrides({
+	@AttributeOverride(name="id",column=@Column(name="id")),
+	@AttribureOverride(name="name",coloumn=@Column(name="name"))
+})
+
+
+

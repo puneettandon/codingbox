@@ -1,0 +1,43 @@
+			HashSet 
+The HashSet class implements the Set interface,backed by a hashtable which is actually a HashMap instance.
+
+No guarantee is made as to the iteration order of the set which means that the class does not guarantee the constant order of elements over time.
+
+This class permits the null element. 
+
+
+Internal working of a HashSet:
+
+All the classes of Set interface internally backed up by Map.
+HashSet uses HashMap for storing its object internally.
+You must be wondering that to enter a value in HashMap we need a key-value pair, but in HashSet we are passing only one value.			
+Storage in HashMap
+Actually the value we insert in HashSet acts as key to the map object and for its value java uses a constant variable.So in key-value pair all the keys will have same value.
+
+
+----------------------------------------------------------------
+Implementation of HashSet in Java doc:
+
+private transient HashMap map;
+
+public HashSet(){    map = new HashMap();	}
+
+private static final Object PRESENT =  new Object();
+
+------- add() method of HashSet class:
+
+public boolean add(E e)
+{
+	return map.put(e,PRESENT) == null;
+}
+
+---------------------------------------------
+Value = "PRESENT"---------> internally calls put() method of backing HashMap object by the passing the element you have specified as a key and constant "PRESENT" as its value
+sly, remove() method calls remove method of Map interface.
+
+----------------------------------------------------------------
+
+Time Complexity of HashSet operation:
+Underlying datastructure for HashSet is hashtable.
+for add,remove and lookup takes O(1) time.
+---------------------------------------------------

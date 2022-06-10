@@ -1,0 +1,173 @@
+			Multithreading GeeksForGeeks
+
+
+Queries 
+
+1. How can we start multiple applications at the same time ?
+2. How can we start multiple tabs in Web Browser at the same time, without affecting any other tab's data
+3. How can we open multiple classes in IDE at the same time?
+4. How can we create a class while building a project in IDE at the same time?(IDE's UI don't get blocked)
+		
+			How is this all happening? 
+
+
+
+			Multiple + Same Time
+
+	> 1. MultiProgramming
+	> 2. MultiTasking
+	> 3. MultiProcessing
+	> 4. MultiThreading
+
+
+
+What is a Program?
+   > Collection of instructions written by programmers in a programming language stored in non-volatile memory(secondary storage devices like hard disk ,optical disk etc).
+
+
+What is a Process? 
+	> Program under execution 
+
+
+	
+
+	   Program1
+          stored in 
+	secondary storage 
+	    device
+
+when we start our application in our system, our OS loads the that program(program1) in our main/primary memory(RAM). 
+Executing any program directly from secondary storage device takes a huge amount of time.
+So when OS brings the program into main memory it converts into a process(Process1).
+
+
+
+Process Memory
+
+
+Process memory consists of different parts
+
+	Meta data of Process 		 	-     PCB
+	contains processId , process status,program counter 
+	and other general purpose registers.this data is  required to 
+	maintain scheduling of the processes.
+
+	Track of active subroutine and/or other events		- Stack
+	stores functions calls, also stores local variables 
+	and its grows downwards towards heap
+
+	Intermediate computation data generated during run time  -  Heap	
+	This heap size keep growing upwards acc to need.
+
+	Program's global variables and static variables   - Global/Static Variables
+
+	An image of the executable machine code associated with a program   -  code
+	( we write code in High level language code understandable by humans but need to be converted to Low Level Language(which is binary or machine language) to be execute by CPU). This conversion from HLL to LLL is done by compiler.
+
+
+------------------------
+
+What is MultiProgramming? 
+
+The main idea of multiprogramming is to minimize the wastage of CPU Time.CPU should not remain idle.
+
+Let say we have Secondary Storage Device(SSD)    CPU     Main memory
+
+Then we have some programs in our  SSD  - program1 ,program2 , program3 ......
+
+
+To execute the program OS need to load it to main memory ..........
+At any time CPU can execute the instruction of only one process.
+like Process1 is under execution.
+Then Program2 and program 3 also  loaded into main memory. .........
+Now Process2 and Process3 are waiting for CPU time.
+
+Now suppose process needs to perform some I/O operation. So at this time CPU is idle.
+this is wastage of CPU time.
+Therefore by multiprogramming concept , OS can interrupt this process1 and fetch either n processes to be executed and utilize the cpu time.
+So Process2 can be executed at this time.
+In multiprogramming, process keeps executing until it is completed or it voluntarily releases the CPU(for executing I/O or any other operation).
+
+
+---------------------------------------
+
+
+What is MultiTasking?
+
+small diff b/w Multiprogramming and Multitasking 
+Every process will run for some quantum of time.
+Process1 is under execution for time quantum period. 
+There are different algorithms for this 
+like round robin
+
+Acc. to round robin which program loaded first will be executed first
+like Process1 then Process2 then Process3 
+after a quantum Process1 is saved back into main memory
+and process2 will be executed
+
+This is called context switching this is done by OS.
+
+Different algorithms are there which to execute first .................
+
+
+---------------------------------------------------------------------------------
+
+
+What is Multiprocessing?
+
+ Refers to hardware ...when we are using mulitple CPU units.
+
+here we can have multiple processes running at the same time.
+This enables parallel processing.
+
+
+
+------------------------------------------------------------
+
+Context Switching : Switch CPU to another process
+
+
+Steps to switch the CPU to another process
+
+Process1		Process2 
+(running)		 |
+  |			 |
+ save 			Fetch
+
+	context switching - time taken to switch from one process to another
+	     time
+1.Save the current process's context to be restored at later time.
+2. Fetch the next scheduled process's context
+
+
+--------------------------------------------------------------------
+
+
+Inter Process Communication : Allows Exchange of data and information between processes
+
+Many a times processes have to communicate to complete some task
+This communication can be done by 
+1. Shared Memory
+2. Message Passing
+
+
+---------------------------------------------------------
+
+MulitThreading
+
+Multithreading in java is a process of executing multiple threads simultaneously.
+A thread is a lightweight sub-process, the smallest unit of processing.
+Threads use a shared memory area.
+They don't allocate separate memory area so saves memory,and context switching between the threads takes less time than process.
+
+
+
+Process Having multiple Threads
+(check img)
+
+
+
+
+
+
+

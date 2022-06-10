@@ -1,0 +1,85 @@
+		Hibernate Inheritance Mapping tutorial
+
+We can map the inheritance hierarchy classes with the table of the database 
+
+1) Table Per Hierarchy 
+2) Table Per Concrete class 
+3) Table Per Subclass 
+
+
+Table Per Hierarchy
+
+In table per Hierarchy, single table is required to map the whole hierarchy, 
+an extra column (known as discriminator column) is added to identify the class. 
+But nullable values are stored in the table.
+
+Example : want to map the whole hierarchy given below into one table of databases.
+
+			Employee
+			    id: int
+			    name: String
+
+	Regular_Employee		Contract_Employee
+		salary : float			pay_per_hour : float
+		bonus  : int 			contract_period: String
+
+
+
+There are three classes in this hierarchy. Employee is the super class for Regular_Employee and Contract_Employee classes.
+
+
+Using Annotation
+
+@Inheritance(strategy=Inheritance.SINGLE_TABLE)
+@DiscriminatorColumn
+@DiscriminatorValue
+annotations are used for mapping table per hierarchy strategy
+
+Here, an extra column (also known as discriminator column) is created in the table to identify the class.
+
+@Entity
+@Table(name="employee101")
+@Inheritance(strategy=InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name="type",discriminatorType=DiscriminatorType.STRING)
+@DiscriminatorValue(value="employee")
+public class Employee{
+
+
+}
+
+@Entity
+@DiscrimintorValue("regularemployee")
+public class Regular_Employee extends Employee{
+
+}
+
+@Entity
+@DiscriminatorValue("contractemployee")
+public class Contract_Employee extends Employee
+{
+	
+}
+
+-------------
+Create the class that stores the persistent object
+
+public class StoreTest{
+	
+	SessionFactory ------------------
+	Session session = factory.openSession();
+
+	Transaction t = session.beginTransaction();
+
+	Employee e1 = new Employee();
+	e1.setName("Gaurav");
+	
+	Regular_Employee e2 = new Regular_Employee();
+	e2.setName("Vivek Kumar");
+	e2.setSalary(500000);
+	e2.setBonus(5);
+
+	Contract_Employee e3 = new Contract_Employee();
+	e3.setName("Arjun");
+	e3.setPay_per_hour(1000);
+	e3.setContract_duration("15 hours");
+}

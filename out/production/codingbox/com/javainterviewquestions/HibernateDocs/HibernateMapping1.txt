@@ -1,0 +1,194 @@
+			Hibernate Mappings
+
+In database,you most likely will have 
+	Mutliple tables 
+	Relationship between tables
+
+Need to model this with hibernate
+
+
+----> Different types of Mappings
+
+ One-to-One
+ One-to-many,many-to-one
+ many-to-many
+
+
+--------------------------------------------------------------------------------
+
+				One-to-One Mapping
+
+An instructor can have "instructor-detail" entity
+
+
+
+		instructor          ----------> instructor detail
+
+
+	         id				    id   
+		 first_name                         youtube_channel
+                 last_name                          hobby
+		 email
+		 instructor_detail_id
+
+
+----------------------------------------------------------------------------
+
+
+				One-to-many mapping
+
+An instructor can have many courses
+
+						      course
+						      course
+		instructor                            course
+						      course
+						      course
+
+
+
+
+sly many courses can have one instructor 
+
+	
+
+--------------------------------------------------------------------------------
+
+				Many-to-many 
+
+A course can have many students
+A student can have many courses 
+
+
+	course 				student
+	course				student
+	course 				student
+	course 				student
+
+
+----------------------------------------------------------------------------------
+
+
+			Important Database Concepts
+
+>> Primay key and Foreign key
+
+>> Cascading
+
+
+Primary Key: identify a unique row in a table.
+
+Foreign Key: Links tables together
+	     a field in one table that refers to primary key in another table.
+
+
+
+Foreign Key Example:
+
+Table:Instructor
+id  first_name	last_name instructor_detail_id <------this is the foreign key column
+1	Chad	  Darby		100--------------
+2 	Madhu	  Patel		200             |
+                                                |
+           -------------------------------------     
+	   |	Instructor_Detail
+	   |---	id	youtube_channel		hobby
+		100	 luv2code.com/youtube	 luv2code
+		200	 youtube.com		 Guitar
+
+----------------------------------------------------------------------------------
+
+
+ Cascade 
+
+
+You can cascade operations
+
+Apply the same operations to related entities
+
+
+Example 
+		Instructor  ---------->		Instructor Detail
+
+
+If I perform save operation on instructor ,then it will also cascade the operation and apply the same operation to instructor-detail
+
+If we delete an instructor ,we should also delete their instructor_detail.This is known as Cascade_Delete
+
+
+
+Example of Cascade Delete
+
+Table: Instructor
+id first_name	last_name	instructor_detail_id
+1      chad	  Darby			100      delete -----
+2      Madhu	  Patel			200		    |
+							    |	   			
+	delete will be performed on instructor_detail table also       	                         						    |
+           -------------------------------------------------   
+	   |	Instructor_Detail
+	   |	id	youtube_channel		hobby  
+	   |---	100	 luv2code.com/youtube	 luv2code   delete
+		200	 youtube.com		 Guitar
+
+So if we perform delete operation on instructor table then delete operation will be performed on instructor-detail table also..........
+
+
+-------------------------------------------------------------------------------
+
+	Cascade Delete depends on the use case 
+	
+	should we do cascade delete here ?
+
+	
+	course 				student
+	course				student	
+	course				student
+	course				student
+
+So if delete a student should we also delete the course also?
+	No way
+you should remove the student from course but you shouldn't delete the course
+
+-----------------------------------------------------------------------------------
+
+
+	Fetch Types ::         Eager 	vs Lazy loading
+
+When we fetch/retrieve data, should we retrieve everything?
+  >>>Eager will retrieve everything
+  >>>Lazy will retrieve on request
+
+Example -:
+		I have an instructor and instructor also have courses 
+so when i retrieve the instructor object should i get all of the courses for that insturctor immediately.or should i grab the course only on request.
+
+
+
+-------------------------------------------------------------------------------------
+
+			Unidirectional
+
+
+	Instructor---------> Instructor_Detail
+
+you have an instructor and instructor_detail .you load the instructor and from there you can access the instructor detail 
+so it is one way relationship
+
+
+------------------------------------------------------------------------------------
+		Bidirectional
+
+	Instructor    ------------------->	Instructor_detail
+		      <------------------
+
+In bidirectional, you can go both way
+you can load the instructor_detail and have the reference to given instructor 
+which is bidirectional
+
+means both instructor and instructor_detail have their reference.
+
+
+-------------------------------------------------------------------------------------
+
+

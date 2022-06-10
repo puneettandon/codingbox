@@ -1,0 +1,12 @@
+Proxy Design Pattern
+
+Structural Design Pattern
+
+Properties:
+-> Used when you want to control access i.e. In databases, you would want to control the delete query available
+only for certain users like admin.
+
+Implementation:
+-> In general, we have class which is executing interface executer method, which is executing all commands.
+-> To control this, we add a proxy, class which implements the same interface and write the conditions for 'admin'
+user before proceeding to actual executer.

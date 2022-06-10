@@ -1,0 +1,88 @@
+			HashMap in java 
+
+HashMap is a part of Java's collection since java 1.2. 
+It provides the basic implementation of the Map interface of Java.
+It stores the data in (key,value)pairs.
+To access a value one must know its key.
+HashMap is known as HashMap because it uses a technique called Hashing.
+Hashing is a technique of converting a large string to small string that represents the same String.
+A shorter value helps in indexing and faster searches.
+HashSet also uses HashMap internally.
+
+Features of HashMap are: 
+1) HashMap is part of java.util package
+2) HashMap extends an abstract class AbstractMap which also provides the incompelete implementation of Map interface.
+3) It also implements Cloneable and Serializable interface.
+4) HashMap doesnot allow duplicate keys but allows duplicate values.
+5) HashMap allows null key but only once and multiple null values.
+6) This class makes no guarantees as to the order of the map; in particularly, it does not guarantee that the order will remain constant over time.
+It is roughly similar to HashTable but is unsynchronized.
+
+-----------------------------------------------------------------
+	
+		Internal Structure of HashMap
+
+Internally HashMap contains an array of Node 
+And Node is represented as a class which contains 4 fields.
+	1) int hash
+	2) K Key
+	3) V value
+	4) Node next
+
+It can be seen that node is containing a reference of its own object. So it's a linkedlist.
+
+HashMap: 
+    
+
+
+
+
+
+-----------------------------------------------------------------
+		Performance of HashMap
+
+Depends on 2 parameters: 
+1. Initial Capacity
+2. Load Factor
+
+Capacity is simply the number of buckets whereas initial capacity is the capacity of hashmap instance when it is created.
+The load factor is a measure that when rehashing should be done.
+Rehashing is a process of increasing the capacity.
+
+-----------------------------------------------------------------
+
+		Synchronized HashMap
+
+As it is told that HashMap is unsynchronized i.e. multiple threads can access it simultaneously.
+If multiple threads access this class simultaneously and atleast one thread manipulates it structurally then it is neccessary to make it synchronized externally.
+	Map m = Collections.synchronizedMap(new HashMap(...));
+
+------------------------------------------------------------------
+
+       		Time Complexity of HashMap
+
+HashMap provides constant time complexity for basic operations, get and put if the hash function is properly written and it disperses the elements properly among the buckets.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

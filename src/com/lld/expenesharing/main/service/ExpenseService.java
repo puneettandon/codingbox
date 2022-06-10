@@ -15,7 +15,9 @@ public class ExpenseService {
 
     public Expense createExpense(String title, String description, LocalDateTime expenseDate, double expenseAmount, String userId) {
 
-        Expense expense = new Expense(UUID.randomUUID().toString(),userId,title,description,expenseDate, ExpenseStatus.CREATED,expenseAmount,new ExpenseGroup());
+        Expense expense = new Expense(UUID.randomUUID().toString(),
+                userId,title,description,expenseDate,
+                ExpenseStatus.CREATED,expenseAmount,new ExpenseGroup());
         ExpenseRepository.expenseMap.putIfAbsent(expense.getId(),expense);
         return expense;
     }

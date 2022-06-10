@@ -1,0 +1,196 @@
+			Collections
+
+A Collection in java is a group of individual objects represented as a single unit.
+Java provides Collections framework which defines several classes and interfaces to represent a group of objects as a single unit.
+
+Java Collections can achieve all the operations that you perform on a data such as searching ,sorting ,insertion, manipulation and deletion.
+
+Why we group up objects?
+
+1. Suppose when we issue a query to database, then in response to query a lot of objects may come.....to java application as a result.
+
+To store these objects we can use array but as we know array are fixed in size ......so in such a situation we require java collection.
+
+2. Suppose we want to pass n number of objects of similar type to a method then first 
+
+Before Collection framework(or before JDK1.2) was introduced,the standard methods for grouping java objects(or collections) were Arrays or Vectors or Hashtables. All of these collections had no common interface.
+
+
+
+	
+		Hierarchy of Collection Framework
+				
+				iterator()
+		Iterable(I)   -----------> Iterator<I>
+	
+		     Collection    (I)                      Map(I)
+	
+	Set(I)         List(I)          Queue(I)   	      SortedMap(I)
+
+	  HashSet(C)        ArrayList(C)    PriorityQueue(C)
+	  LinkedHashSet(C)  LinkedList(C)   Deque(I)
+                            Vector(C)           
+         SortedSet(I)         Stack(C)
+           TreeSet(C)
+
+
+Stack extends Vector
+PriorityQueue implements Queue
+Deque(I) extends Queue(I)
+ArrayDeque(C) implements Deque(I)
+LinkedList implements List,Deque
+
+Iterable interface
+contains one method 
+Iterator<T>  iterator()
+
+
+Iterator interface
+contains 3 methods
+boolean hasNext() returns true if the iteration has more elements.
+E next()	return the next element in the iteration
+void remove  removes from the underlying collection the last element returned by this 	     iterator.
+
+
+
+Advantages of Collection Framework
+
+1. Consistent API: The API has a basic set of interfaces like Collection,Set,List,or Map.All classes(ArrayList,LinkedList,Vector,etc) that implement these interfaces have some common set of methods.
+2. Reduces programming effort: 
+3. Increases program speed and quality:
+
+
+
+-----------------------------------------------------------------
+
+		Methods of Collection interface
+
+boolean add(E e)
+boolean addAll(Collection c)
+boolean remove(Object element)
+boolean removeAll(Collection c)
+int size()
+void clear()
+boolean contains(Object element)
+boolean containsAll(Collection c)
+boolean isEmpty()
+Iterator iterator()
+Object[] toArray()
+int hashCodoe()
+
+
+----------------------------------------------------------------
+
+
+What are main differences between array and collection?
+
+Array and Collection are somewhat similar regarding storing the references of objects and manipulating the data,but they differ in many ways.
+
+1) Arrays are always of fixed size.,but size can be changed dynamically as per need.
+
+2) Arrays can only store homogeneous or similar type objects, but in collection, heterogeneous objects can be stored.
+
+3) Arrays can not provide the ready-made methods for user requirements  as sorting,searching ,etc. but collection includes readymade methods to use.
+
+------------------------------------------------------------------
+
+
+
+List - ordered collection - contains duplicate elements. allows random access of elements
+Set - cannot contain duplicate elements - 
+
+Queue - stores elements in the form FIFO
+Deque - it can perform LIFO stack operations as well as FIFO queue operations.
+
+
+--------------------------------------------------------------------------------
+
+
+
+Difference between ArrayList and Vector
+
+AL 				Vec
+			
+>not synchronized		synchronized
+>not a legacy class		legacy class
+>increases its size by		increases its size by 
+50% of the array size		doubling array size
+>not thread safe		thread safe
+
+
+
+
+Difference between ArrayList and LinkedList
+
+AL 				LL
+>uses dyanamic array		uses doubly linked list
+>not efficient for		efficient for manipulation 
+manipulation
+> better to store 		better to manipulate
+and fetch
+>provides random access		doesn't provide random access
+> takes less memory as		takes more memory overhead ,as it  stores
+it stores only object		the object as well as the address of next object
+
+
+Difference between Iterator and ListIterator
+
+It				LIt
+traverses the element		traverses the element in backward and 	
+in forward dir			forward element
+List,Set,Queue			List only
+
+
+
+Difference between List and Set
+
+can contain duplicate elements		unique elements
+Ordered collection			unordered collection
+can allow n number of null values	allows a single null value
+
+
+Difference between HashSet and TreeSet
+
+HS				TS
+no order			maintains ascending order
+implemented by hash table	implemented by tree DS
+Faster				Slower
+Backed by HashMap		Backed by TreeMap
+
+
+Difference between Set and Map
+
+Set				Map
+contains only values 		key values both
+unique values			uniques keys with duplicate values
+single null value		single null key with n number of null values
+
+
+Difference between HashSet and HashMap
+
+HS				HM
+
+contains only values		key,value
+can be directly iterated	needs to convert into Set to be iterated
+HS ---> Set			HM ---> Map
+no duplicate values		duplicate values with unique keys
+
+
+
+Difference between HashMap and HashTable
+> Not synchronized		synchronized
+> one null key and		cannot contain any null key or null value
+multiple values
+> not thread safe		Thread safe
+> inherits AbstractMap class	inherits the Dictionary class
+
+
+Differnce between Collection and Collections
+
+Collection			Collections
+>interface			class
+>provides standard 		used to sort 
+functionality of data		and synchronize  
+structure to list,set		the collection elements
+and queue.		
+

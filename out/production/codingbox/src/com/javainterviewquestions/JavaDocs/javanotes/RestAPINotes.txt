@@ -1,0 +1,215 @@
+			Restful API 
+
+	Messenger - A Social media application API
+
+
+What are Web Services? 
+
+Web Services are services that are exposed to internet 
+
+
+Client ----->      WebService ------> WebService
+
+
+
+	Messenger
+
+> Post messages
+> Comment on messages
+> Like and share messages
+> User profiles
+
+
+
+	Resource URIs  (Instance)
+
+/profiles/{profileName}
+/messages/{messageId}
+/messages/{messageId}/comments/{commentId}
+/messages/{messageId}/likes/{likeId}
+/messages/{messageId}/shares/{shareId}
+
+
+	Collection URIs  (Getting all message)
+
+/messages
+/messages/{messageId}/comments
+/profiles
+
+
+	How about all comments?
+
+/messages/{messageId}/comments  will not work!
+
+/comments would have worked!
+
+
+	Filtering results
+
+/messages?offset=30&limit=10
+     startingpoint   	pagesize
+
+
+--------------------------------------------------------------
+
+		Messenger
+
+Getting a message 
+	GET  -------->     /messages/{messageId}
+	
+			   /messages/20
+
+Updating a message
+	PUT  --------->    /messages/{messageId}
+
+
+
+Deleting a message 
+	Delete  --------->   /messages/{messageId}
+
+
+Creating a new message
+	POST    ---------->    /messages
+
+
+	Collection URI scenarios
+
+GET -------> /messages
+
+DELETE ------> /messages/10/comments
+
+POST --------> /messages/10/comments
+
+PUT --------->  messages/20/comments
+			replaces all comments for message 20 with a new list
+
+----------------------------------------------------------
+
+
+
+			HTTP  Methods
+
+GET- PUT - DELETE ------> Safely repeatable  -------> idempotent
+
+
+POST --------> cannot be repeated safely -----everytime new instance will be created ---------------> non idompotent
+
+------------------------------------------------------------
+
+
+
+	Response(XML/JSON)
+
+Message Entity
+public class MessageEntity{
+
+	long id ;
+	String message;
+	Date created;
+	String author;
+...
+}
+
+JSON Response for a message
+{	
+	"id": "10",
+	"message":"Hello World"
+	"created":"2020-20-01"
+	"author":"koushik"
+}
+
+
+XML Response for a message
+
+<messageEntity>
+	<id>10</10>
+	<message>Hello World</message>
+	<created>2020-01-01</created>
+	<author>Koushik</author>
+</messageEntity>
+
+Response for messageid 10
+
+Diff. representations of response
+
+How does client know the what the format is ?
+By headers
+
+Headers - MessageLength
+	  Date
+	  Content Type
+
+Using Content Type - can specify the type of format
+--------------------------------------------------------
+
+
+		Status Codes
+
+
+Error Pages
+
+200 OK	Successful
+404 Not Found	
+
+
+1X -------------------->   5X
+
+1X ---------> Informational --Acknowledgement Responses 
+2X ---------> Successful Response
+	200 Ok
+	201 Created
+	204 No Content
+
+3XX --------> Redirection 
+	302 Found
+	307 Temporary Redirect
+	304 Not Modified
+
+4XX ---------> Client Error 
+	Request syntax
+	400 Bad Request 400 ---- Server is not able to understant the request
+	401 Unauthorized client needs to sign in or authorize them to see the request
+	403 Forbidden	Don't have the required access
+	404 Not Found
+	415 Unsupported Media -- Client is speaking in a language or format server can't understand
+
+5XX ------------> Serror Error -- Got the request from client -- it's valid one ---but not able to process it
+
+	500 Internal Server Error 
+
+
+----------------------------------------------------------------
+
+		HATEOAS
+
+Hypermedia As the Engine of Application State
+
+No Service Definition for Rest API
+
+
+
+Client         <--------------------------	Request URI
+			Response
+
+
+If you want to return uri
+{
+  "id": "20",
+  "message": "Hello World",
+  "date":"01Jan2020",
+  "author":"Koushik",
+  "commentsUri":"api/messages/20/comments",
+  "likesUri":"api/messages/20/likes",
+  "sharesUri":"api/messages/20/shares",
+  "authorProfilesUri":"api/profiles/koushik"
+}
+
+Message Resource URI
+ "/messages/" + "1"
+
+
+"href":"/messages/1"
+
+<a href="/home.html"> Home</a> 
+
+

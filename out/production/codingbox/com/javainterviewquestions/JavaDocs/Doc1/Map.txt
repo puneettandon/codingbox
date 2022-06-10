@@ -1,0 +1,48 @@
+			Map interface in java
+
+The java.util.Map interface represents a mapping between a key and a value.
+The Map interface is not a subtype of the Collection interface.
+Therefore it behaves a bit different from the rest of the collection types.
+
+Map ----> SortedMap
+
+Few characteristics of the Map interface are:
+1. A Map cannot contain duplicate keys and each key can map to at most one value.
+Some implementaton allow null key and null value like the HashMap and LinkedHashMap, but some donot like the TreeMap
+2. The order of a map depends on specific implementations eg; TreeMap and LinkedHashMap have predictable order,while HashMap doesnot
+3. There are two interfaces for implementing Map in java: Map and SortedMap, and 3 classes: HashMap,TreeMap and LinkedHashMap.
+
+
+
+
+
+
+
+			Map (interface)
+
+HashMap(class) implements Map 
+LinkedHashMap extends HashMap
+SortedMap(interface) extends Map
+TreeMap(class) implements SortedMap
+-----------------------------------------------------------------
+
+Why and when to use Maps?
+
+Maps are perfect to use for key-value association mapping such dictionaries.The maps are used to perform lookups by keys or when someone wants to retrieve and update elements by keys. 
+Some example are: 
+A map of error codes and their descriptions
+A map of zip code and cities
+A map of manager and employees
+A amp of classes and students
+
+-----------------------------------------------------------------
+
+Methods of Map interface: 
+1.public Object put(Object key,Object value)
+2.public Object putAll(Map map)
+3.public Object remove(Object key)
+4.public Object get(Object key)
+5.public boolean contains(Object key)
+6.public Set keySet()
+7.public Set entrySet()
+ 

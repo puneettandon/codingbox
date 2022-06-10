@@ -1,0 +1,27 @@
+Robust:  1. Memory Management, 
+	 2. Automatic Garbage Collection,  
+	 3. Exception Handling mechanism
+	 4. Lack of pointers
+
+
+Secured: 1. No Explicit pointer
+	 2. Java has its own JVM(own Runtime environment)
+	 3. Classloader(part of jre which is used to load java classes into the java virtual machine dynamically)
+	 4. Bytecodoe Verifier(checks the code fragments for illegal code that can violate access right to objects)
+	 5. Security Manager(determines what resources a class can access such as reading and writing to the local disk)
+
+
+Architectural-neutral: java is architectural neutral because 
+
+
+Simple: 1. Easy to learn
+	2. Simple syntax
+	
+
+Object-oriented: 1. Everthing in java is an object.
+		 2. Object-oriented means we organize our software as a combination of different types of objects that incorporates both data and behavior.
+
+
+Platform Independent: 1. Java code is compiled by the compiler and converted into bytecode. Bytecode platform independent 
+
+Dynamic: Java is a dynamic language. 

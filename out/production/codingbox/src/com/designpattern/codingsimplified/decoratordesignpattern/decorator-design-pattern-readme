@@ -1,0 +1,12 @@
+Decorator Design Pattern
+
+Properties
+-> Structural Design Pattern
+-> Used when we want to modify functionality of an object at runtime & it should not change individual
+object functionality
+-> i.e. Adding different functionalities in Dress
+
+            Dress(I)
+            BasicDress(a)
+CasualDress      FancyDress             SportyDress
+

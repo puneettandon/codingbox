@@ -7,15 +7,17 @@ public class LongestSubstringWithoutRep {
 
     public static void main(String[] args) {
 
-        String str = "dvdf"; // abcd
+        String str = "puneettandon"; // abcd
 
         System.out.println("longest substring without rep is: "+longestSubstringWithoutRep(str));
 
         System.out.println("longest unique substring: "+longestUniqueSubsttr(str));
 
-        System.out.println("Longest unique subString : "+ longestUniqueSubstring(str));
+      //  System.out.println("Longest unique subString : "+ longestUniqueSubstring(str));
 
-        System.out.println("longest substring unique using hashmap : "+ longestUniqueSubstringUsingHashMap(str));
+      //  System.out.println("longest substring unique using hashmap : "+ longestUniqueSubstringUsingHashMap(str));
+    //    System.out.println("Longest substring prac: "+longestSubstringWithoutRepPractice1(str));
+        System.out.println("Longest substring prac2: "+ longestUniqueSubstringPractice2(str));
     }
 
 
@@ -41,6 +43,25 @@ public class LongestSubstringWithoutRep {
         return  longestOverall;
     }
 
+    private static String longestSubstringWithoutRepPractice1(String str){
+        HashSet<Character> hs = new HashSet<>();
+        String longestOverall = "";
+        String longestTillNow = "";
+        for(int i = 0;i<str.length();i++){
+            char c = str.charAt(i);
+            if(hs.contains(c)){
+                longestTillNow = "";
+                hs.clear();
+            }
+            longestTillNow += c;
+            hs.add(c);
+            if(longestTillNow.length() > longestOverall.length()){
+                longestOverall = longestTillNow;
+            }
+        }
+        return longestOverall;
+    }
+
     public static int longestUniqueSubsttr(String str)
     {
         int n = str.length();
@@ -50,7 +71,7 @@ public class LongestSubstringWithoutRep {
 
         for(int i = 0; i < n; i++)
             for(int j = i; j < n; j++) {
-                System.out.println("i = " + i + " j = " + j);
+             //   System.out.println("i = " + i + " j = " + j);
                 if (areDistinct(str, i, j))
                     res = Math.max(res, j - i + 1);
             }
@@ -67,8 +88,8 @@ public class LongestSubstringWithoutRep {
 
         for(int k = i; k <= j; k++)
         {
-            System.out.println("i = "+ i + " j = "+j + " k = "+k);
-            System.out.println(visited[str.charAt(k) - 'a']);
+         //   System.out.println("i = "+ i + " j = "+j + " k = "+k);
+         //   System.out.println(visited[str.charAt(k) - 'a']);
             if (visited[str.charAt(k) - 'a'] == true)
                 return false;
 
@@ -169,6 +190,28 @@ public class LongestSubstringWithoutRep {
         }
 
         return ans;
+    }
+
+    private static int  longestUniqueSubstringPractice2(String str){
+
+        String longestTillnow = "" ;
+        String longestOverall = "";
+
+        for(int i  = 0;i<str.length()-1;i++){
+            char c = str.charAt(i);
+            int pos = longestTillnow.indexOf(c);
+            if(pos != -1){
+                System.out.println("longesttillnow before: "+longestTillnow + " pos: "+pos + " i = "+i);
+              longestTillnow =  str.substring(pos + 1,i+1);
+                System.out.println("longesttillnow after : "+longestTillnow);
+            }
+            longestTillnow += c;
+            if(longestTillnow.length() > longestOverall.length()){
+                longestOverall = longestTillnow;
+            }
+            System.out.println("Longest Overall "+longestOverall);
+        }
+        return 1;
     }
         
 

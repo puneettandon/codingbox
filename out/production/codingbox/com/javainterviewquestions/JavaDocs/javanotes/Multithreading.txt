@@ -1,0 +1,436 @@
+			Multithreading in Java
+
+
+Multitasking - Ability of operating system to execute more than one task simultaneously is known as multitasking.
+Example - we can run n number of sessions of internet explorer concurrently or we can play winamp or printing on concurrent basis.
+Using concept of multitasking we can exploit cpu time in more efficient manner. 
+OS achieves multitasking using concept of time slicing.
+
+Multitasking can be of 2 types- 1. Process-based    2. Thread-based
+
+In case of process based m/t, o/s will manage execution of each process in separate two address space.
+Whereas in case of thread based m/t, o/s can manage multiple task in single address space.
+Process based m/t best suitable when two processes don't need resource sharing
+Whereas in case where if each process need data of each other then such kind of comm. of data results in speed degradation.
+To resolve above problem,O/S propose thread based multitasking
+
+Ex- Of process based multitasking are execution of multiple winamp and explorer and mspaint
+Thread based multitasking are execution of multithreads running within word application - spell check + word printing + word typing 
+
+
+
+			Multithreading
+Multithreading in java is a process of executing multiple threads simultaneously.
+A thread is a lightweight sub-process, the smallest unit of processing.
+Threads use a shared memory area.
+They don't allocate separate memory area so saves memory,and context switching between the threads takes less time than process.
+
+
+	Advantages of Java Multithreading
+1. doesn't the block the user because threads are independent and you can perform multiple operations at the same time.
+2. can perform many operations together,saves the time.
+3. Threads are independent, so it doesn't affect other threads if an exception occurs in a single thread.
+
+
+
+------------------------------------------------------------------------
+
++
+	Java Thread class 
+
+-Java provides Thread class to achieve the thread programming.
+-Thread  class extends Object class and implements Runnable interface.
+
+
+Threads can be created by two mechanisms: 
+1) Extending the thread class
+2) Implementing the Runnable interface
+
+
+	>>>>Thread creation by extending the Thread class
+
+We create a class that extends java.lang.Thread class.This class overrides the run() method available in the Thread class.A thread begins its life inside run() method.
+We create an object of our new class and call start() method to start the execution of a thread. Start() invokes run() method on Thread object.
+
+
+class MulitThreadingDemo extends Thread{
+
+	public void run(){	sys("Thread " + Thread.currentThread().getId + " is running");		}
+
+}
+
+public class MultiThread{
+
+		psvm(){
+			
+			int n = 3;		
+			for(int i = 0;i< 3:i++){
+				MulitthreadingDemo object = new MultithreadingDemo();
+				object.start();
+			}
+		}
+}
+output:
+
+Thread 3 is running
+Thread 2 is running 
+Thread 1 is running
+
+		>>>>>	Thread creation by implementing runnable interface
+
+class MultiThreadingDemo implements Runnable{
+		
+	public void run(){	sys("Thread "+ Thread.currentThread().getId()+ "is running");	}
+}
+
+class MultiThread{
+		
+		psvm(){
+			int i = 3;
+			for(int i = 0; i< 3;i++){
+				Thread object = new Thread(new MultiThreadDemo());
+				object.start();
+			}
+		}
+}
+
+output:
+
+Thread 3 is running
+Thread 2 is running 
+Thread 1 is running
+
+------------------------------------------------------------------------------------------------------
+
+
+
+				Thread vs Runnable
+	
+
+1. If we extend the Thread class ,our class cannot extend any other class because Java doesn't support multiple inheritance
+2. But if we implement Runnable interface,our  class still extend other base classes.
+3. We can achieve the basic functionality of a thread by extending the Thread class because it provides some inbuilt methods like yield(),interrupt() etc. that are not available in Runnable interface.
+
+
+Thread class methods
+
+1. void start()
+2. void run()
+3. static void sleep()
+4. static Thread currentThread()
+5. void join()
+6. int getPriority()
+7. void setPriority()
+8. String getName()
+9. void setName()
+10. long getId()
+11. boolean isAlive()
+12. static void yield()
+13. void suspend()
+14. void resume()
+15. void stop()
+16. void destroy()
+17. boolean isDaemon()
+18. void setDaemon()
+19. void interrupt()
+20. boolean isinterrupted()
+21. static boolean interrupted()
+22. static int activeCount()
+23. void checkAccess()
+24. static boolean holdLock()
+25. static void dumpStack()
+26. static void setDefaultUncaughtExceptionHandler()
+27. static Thread.UncaughtExceptionHandler getDefaultUncaughtExceptionHandler()
+28. ClassLoader getContextClassLoader()
+29. void setContextClassLoader()
+30. void notifyAll()
+31. void notify()
+32. String toString()
+33. ThreadGroup getThreadGroup()
+34. Thread.State getState()
+35. static int enumerate()
+36. StackTraceElement[] getStackTrace()
+
+
+-----------------------------------------------------------------
+
+	How to create thread
+1. By extending Thread class
+2. By implementing Runnable interface
+
+
+---Thread class:
+
+Thread class provides constructors and methods to create and perform operations on a thread.Thread class extends Object class and implements Runnable interface.
+
+Commonly used Constructors of Thread class: 
+
+Thread()
+Thread(String name)
+Thread(Runnable r)
+Thread(Runnable r,String name)
+
+
+---Runnable interface:
+
+The Runnable interface should be implemented by any class whose instances are intended to executed by a thread.Runnable interface have only one method named run().
+
+public void run()
+
+------------------------------------------------------------------------
+
+
+			Life Cycle of Thread
+
+Life cycle of thread is controlled by JVM.
+
+1. New
+2. Runnable
+3. Running
+4. Non-Runnable(Blocked)
+5. Terminated
+
+1. New - The thread is in new state if you create an instance of Thread class but before the invocation of start() method.
+
+2. Runnable - The thread is in runnable state after invocation of start() method.The thread wait for cpu attention. There can be n number of threads in runnable state waiting for thread scheduler to give cpu attention.
+
+3. Running - The thread is in running when it gets cpu attention. when its run() method runs.(Thread scheduler selects it.)
+
+4. Non-Runnable(Blocked) - In this state thread is still alive, but is currently not eligible to run. 1)When we call sleep method of thread object.
+ 2) on join on thread object. 3) wait method on shared resource. 4) when we ask i/o operations from thread working.
+A thread comes out of blocked state when sleep time over,or join time over , or on notify call or when io operation over
+and it agains enter runnable state.
+
+5. Terminated - when its run() method exits.
+
+----------------------------------------------------------------------
+
+public final setName(String str) used to assign a user defined name to a thread.
+
+public final setPriority(int pr) used to assign a new level of priority to thread. 
+Priority can be 1 to 10 
+1 - min
+10 - max 
+Default - 5
+
+currentThread is used to obtain reference of currently active thread.We always call it from working thread.
+
+---main itself is thread.
+
+------------------------------------------------------------------
+	
+			Thread Scheduler in java
+
+Thread scheduler in java is the part of JVM that decides which thread should run.
+-There is no guarantee that which runnable thread will be chosen to run by the thread scheduler.
+-Only one thread at a time can run in a single process.
+-The thread scheduler mainly uses preemptive or time slicing scheduling to schedule the threads.
+- Under preemptive scheduling, the highest priority task executes until it enters the waiting or dead states or a higher priority task comes into existence. Under time slicing, a task executes for a predefined slice of time and then reenters the pool of ready tasks. The scheduler then determines which task should execute next, based on priority and other factors.
+
+
+--------------------------------------------------------------------
+	
+			Sleep method in java
+
+used to sleep a thread for the specified amount of time.
+
+public static void sleep(long miliseconds) throws InterruptedException
+
+--------------------------------------------------------------------------
+
+Can we start a thread twice?
+
+No. After starting a thread, it can never be started again. If you does so, an IllegalThreadStateException is thrown.In such case,thread will run once but for second time, it will throw exception.
+
+--------------------------------------------------------------------------
+
+What if we call run() method directly instead start() method?
+will execute as a normal method. not a thread 
+
+Each thread starts in a separate call stack.
+Invoking the run() method from main thread,the run() method goes on the current call stack rather than at the begining of a new call stack
+
+--------------------------------------------------------------------------
+
+The join() method
+
+join() method waits for a thread to die.In other words, it causes the currently running threads to stop executing until the thread it joins completes its task.
+
+Syntax :  public void join() throws InterruptedException
+	  public void join(long milliseconds) throws InterruptedException
+
+
+--------------------------------------------------------------------------
+
+			Daemon Thread in Java(Background Thread) 
+This thread is a service provider thread that provides services to the user thread.
+Its life depends on the mercy of user threads i.e. when all the user threads die, JVM terminates this thread automatically.
+
+Daemon thread does not compete for resources with non daemon threads that is if got the chance to execute only if all non daemon thread suspended.
+
+It provides services to user threads for background supporting tasks.It has no role in life than to serve the user threads.
+Its life depends on user threads.
+It is a low priority thread.
+
+Why JVM terminates the daemon thread if there is no user thread?
+The sole purpose of the daemon thread is that it provides services to user thread for background support.If there is no user thread,why should JVM keep running this thread.
+Example gc,finalizer etc...
+
+Note: If you want to make a user thread as Daemon, it must not be started otherwise it will throw IllegalThreadStateException.
+
+----------------------------------------------------------------------------
+
+			Java Shutdown Hook
+The shutdown hook can be used to perform clean resources or save the state when jvm shuts down normally or abruptly.
+Performing clean resource means closing log file, sending some alerts or something else.So if you want to execute some code beform JVM shuts down, use shutdown hook.
+
+When does the JVM shut down?
+The JVM shuts down when: 
+   user presses ctrl+c on the cmdprmpt
+   System.exit(int) method is invoked
+   user logoff
+   user shutdown etc.
+
+The addShutdownHook(Thread hook) method of runtime class is used to register the thread with the virtual machine.
+
+Note: The shutdown sequence can be stopped by invoking the halt(int) method of Runtime class.
+---------------------------------------------------------------------------
+
+
+
+		Main Thread in Java
+
+Java provides builtin support for multithreaded programming. A mulithreaded program  contains two or more parts that can run concurrently.Each part of such a program is called a thread and each thread defines a separate path of execution.
+
+When a java program starts up,one thread begins running immediately. This is usually called the main thread of our program, it is the one that is executed when our program begins.
+
+Properties: 
+1. It is the thread from which other "child" threads will be spawned.
+2. Often,it must be the last thread to finish execution because it performs various shutdown actions.
+
+				JVM
+				 |
+		---------start---------------start-------
+		|					|
+	 for each program				|
+		|				        |
+	      Main Thread			Other Daemon Threads eg Garbage Collector
+		/	\
+	ChildThreadA	ChildThreadB
+		/
+	  ChildThreadC		
+
+
+	How to control Main thread
+
+The main thread is created automatically when our program is started. To control it we must obtain a reference to it. This can be done by calling the method currentThread( ) which is present in Thread class. 
+ This method returns a reference to the thread on which it is called
+The default priority of Main thread is 5 and for all remaining user threads priority will be inherited from parent to child.
+
+
+public class Test extends Thread 
+{ 
+    public static void main(String[] args) 
+    { 
+        // getting reference to Main thread 
+        Thread t = Thread.currentThread(); 
+          
+        // getting name of Main thread 
+        System.out.println("Current thread: " + t.getName()); 
+          
+        // changing the name of Main thread 
+        t.setName("Geeks"); 
+        System.out.println("After name change: " + t.getName()); 
+          
+        // getting priority of Main thread 
+        System.out.println("Main thread priority: "+ t.getPriority()); 
+          
+        // setting priority of Main thread to MAX(10) 
+        t.setPriority(MAX_PRIORITY); 
+          
+        System.out.println("Main thread new priority: "+ t.getPriority()); 
+          
+          
+        for (int i = 0; i < 5; i++) 
+        { 
+            System.out.println("Main thread"); 
+        } 
+          
+        // Main thread creating a child thread 
+        ChildThread ct = new ChildThread(); 
+          
+        // getting priority of child thread 
+        // which will be inherited from Main thread 
+        // as it is created by Main thread 
+        System.out.println("Child thread priority: "+ ct.getPriority()); 
+          
+        // setting priority of Main thread to MIN(1) 
+        ct.setPriority(MIN_PRIORITY); 
+          
+        System.out.println("Child thread new priority: "+ ct.getPriority()); 
+          
+        // starting child thread 
+        ct.start(); 
+    } 
+} 
+  
+// Child Thread class 
+class ChildThread extends Thread 
+{ 
+    @Override
+    public void run()  
+    { 
+        for (int i = 0; i < 5; i++) 
+        { 
+            System.out.println("Child thread"); 
+        } 
+    } 
+} 
+
+
+
+			Relation between the main() method and main thread in Java
+
+For each program, a Main thread is created by JVM(Java Virtual Machine). The “Main” thread first verifies the existence of the main() method, and then it initializes the class. Note that from JDK 6, main() method is mandatory in a standalone java application.
+
+
+
+		Deadlocking with use of Main Thread(only single thread)
+
+
+
+We can create a deadlock by just using Main thread, i.e. by just using a single thread. 
+
+public class Test  
+{ 
+    public static void main(String[] args) 
+    { 
+        try
+        { 
+              
+            System.out.println("Entering into Deadlock"); 
+              
+            Thread.currentThread().join(); 
+              
+            // the following statement will never execute 
+            System.out.println("This statement will never execute"); 
+              
+        }  
+          
+        catch (InterruptedException e)  
+        { 
+            e.printStackTrace(); 
+        } 
+    } 
+} 
+
+Output
+
+Entering into Deadlock
+
+
+
+
+Explanation :
+The statement “Thread.currentThread().join()”, will tell Main thread to wait for this thread(i.e. wait for itself) to die. Thus Main thread wait for itself to die, which is nothing but a deadlock.
+

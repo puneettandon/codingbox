@@ -225,6 +225,20 @@ public class MySingleLinkedList   {
         }
     }
 
+    void removeDuplicateSortedLinkedListV2(){
+        MyNode temp = head, prev = head;
+        while(temp != null){
+            if(temp.value != prev.value){
+                prev.next = temp;
+                prev.next = temp;
+                prev = temp;
+            }
+            temp = temp.next;
+        }
+        if(prev != temp)
+            prev.next = null;
+    }
+
     void moveLastToFirst(){
        MyNode last= head;
        MyNode secLast = null;

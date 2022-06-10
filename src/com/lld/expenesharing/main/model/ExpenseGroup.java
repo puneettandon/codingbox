@@ -7,7 +7,7 @@ import java.util.UUID;
 
 public class ExpenseGroup {
 
-    private Set<User> groupMemebers = new HashSet<>();
+    private Set<User> groupMemebers;
     private String expenseGroupId;
     private Map<String,UserShare> userContributions;
 
@@ -15,7 +15,6 @@ public class ExpenseGroup {
     public ExpenseGroup() {
         this.expenseGroupId = UUID.randomUUID().toString();
         this.groupMemebers = new HashSet<>();
-        this.groupMemebers = groupMemebers;
     }
 
     public Set<User> getGroupMemebers() {

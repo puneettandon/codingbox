@@ -1,0 +1,155 @@
+		Hibernate Value Types and Embedded Objects
+
+When user class contains user defined object  
+
+One approach to save is : 
+
+User Class				User Table
+		
+ID			 ID  Name  St City State Pincode Phone DOB
+Name
+
+Address  Street
+	 City
+	 State
+ 	 Pincode
+
+Phone
+Date of Birth	
+
+
+This approach works fine when User defined object is Value object 
+means - 
+In hibernate there are two types of objects   1. Entity Objects
+					      2. Value Objects
+
+
+Entity is example User class ----user is an entity that need to be saved as separate table in database. Entity independent ---contains data that provides meaning about itself
+
+Value object is an object that has data that also needs to be saved in database but it doesn't have meaning of itself it provides meaning to some other objects.....
+Example Address with street,city,state and pincode variables but Address object itself doesn't have any meaning means whose address .....address of this user
+.........without having user doesn't make sense...........
+
+------------------------------------------------------------------------------------
+
+Entity can contain another entity in itself....
+
+-----------------------------------------------------------------------------------
+
+
+Implementation  - 
+
+Address.java
+
+@Embeddable
+public class Address{
+
+	private String street;
+	private String city;
+	private String state;
+	private String pincode;
+
+	//getters and setter
+
+}
+
+Mark Address as Embeddable ..........this object is embeddable doesn't need separate table...........So means address needs to be Embedded in UserDetails 
+
+Now in UserDetail.java
+
+@Entity
+@Table(name="USER_DETAILS")
+public class UserDetails{
+	
+	private int userId;
+	private String userName;
+	@Embedded
+	private Address address
+
+	// getters and setters
+}
+
+Only one Table UsersDetails is required as show above for value objects .
+
+-------------------------------------------------------------------------------
+
+		AttributeOverrides And Embedded Object Keys
+
+Implication of Value object
+
+public class Address{
+	
+	@Column(name="STREET_NAME")
+	private String street;
+	@Column(name="CITY_NAME")
+	private	String city;
+	@Column(name="STATE_NAME")
+	private String state;
+
+        --------------	
+
+	// setter and getter 
+}
+
+
+
+Example I have two address fields - homeAddress and officeAddress  in UserDetails.java class
+
+@Entity
+@Table(.....)
+class UserDetails{
+	
+......
+	@Embedded
+	private Address homeAddress;
+
+	@Embedded 
+	private Address officeAddress;
+
+// getters and setters
+
+}
+
+so there will be conflict in database to solve this we use @AttributeOverride
+
+	change in UserDetails.java 
+
+ 	@Embedded
+	@AttributeOverrides({
+	@AttributeOverride(name="street",
+			   column=@column(name="Home_Street_Name")),
+	@AttributeOverride(name="city",
+			   column=@Column(name="Home_City_Name")),
+	@AttributeOverride(name="state",
+			   column=@Column(name="Home_State_Name")),
+	@AttributeOverride(name="pincode",
+			   column=@Column(name="Home_Pin_Code"))
+	})
+	private Address homeAddress;
+
+	private Address officeAddress;
+
+
+	// getter and setter
+-------------------------------------------------------------------------------
+
+
+
+in case primary id is value object 
+
+@Id
+@Embedded //cannot both use this annotations
+private LoginName userId;
+
+
+@EmbeddedId     // this is the  soln.   // AttributeOverrides works same here also
+private LoginName userId;
+
+----------------------------------------------------------------------------------
+
+
+
+
+
+
+------------------------------------------------------------------------------

@@ -1,0 +1,17 @@
+Fly Weight Design Pattern
+
+Structural Design Pattern
+
+Properties:
+-> Used when we need to create many object of a class. We use it to reduce object creation of object.
+-> Intrinsic properties : which are same for a object.
+-> Extrinsic properties : which are different for a object.
+
+Implementation:
+-> Interface: which contains common method: Employee
+-> Object: Individual Class: Developer, Tester
+-> Intrinsic Property (Developer : fix the issue, Tester : test the issue)
+-> Extrinsic Property : Skills
+-> We use Factory to use return Object: EmployeeFactory
+-> Client: Client class
+-> We will assign issues as per skills

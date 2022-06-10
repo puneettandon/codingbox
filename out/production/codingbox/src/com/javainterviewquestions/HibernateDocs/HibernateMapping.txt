@@ -1,0 +1,119 @@
+			Hibernate Mappings
+
+In database,you most likely will have 
+	Mutliple tables 
+	Relationship between tables
+
+Need to model this with hibernate
+
+
+----> Different types of Mappings
+
+ One-to-One
+ One-to-many,many-to-one
+ many-to-many
+
+
+--------------------------------------------------------------------------------
+
+				One-to-One Mapping
+
+An instructor can have "instructor-detail" entity
+
+
+
+		instructor          ----------> instructor detail
+
+
+	         id				    id   
+		 first_name                         youtube_channel
+                 last_name                          hobby
+		 email
+		 instructor_detail_id
+
+
+----------------------------------------------------------------------------
+
+
+				One-to-many mapping
+
+An instructor can have many courses
+
+						      course
+						      course
+		instructor                            course
+						      course
+						      course
+
+
+
+
+sly many courses can have one instructor 
+
+	
+
+--------------------------------------------------------------------------------
+
+				Many-to-many 
+
+A course can have many students
+A student can have many courses 
+
+
+	course 				student
+	course				student
+	course 				student
+	course 				student
+
+
+----------------------------------------------------------------------------------
+
+
+			Important Database Concepts
+
+>> Primay key and Foreign key
+
+>> Cascading
+
+
+Primary Key: identify a unique row in a table.
+
+Foreign Key: Links tables together
+	     a field in one table that refers to primary key in another table.
+
+
+
+Foreign Key Example:
+
+Table:Instructor
+id  first_name	last_name instructor_detail_id <------this is the foreign key column
+1	Chad	  Darby		100--------------
+2 	Madhu	  Patel		200             |
+                                                |
+           -------------------------------------     
+	   |	Instructor_Detail
+	   |---	id	youtube_channel		hobby
+		100	 luv2code.com/youtube	 luv2code
+		200	 youtube.com		 Guitar
+
+----------------------------------------------------------------------------------
+
+
+ Cascade 
+
+
+You can cascade operations
+
+Apply the same operations to related entities
+
+
+Example 
+		Instructor  ---------->		Instructor Detail
+
+
+If I p
+
+
+
+
+	 

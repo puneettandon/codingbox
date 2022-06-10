@@ -1,0 +1,260 @@
+			Java String 
+
+char[] ch = {'p','u','n','e','e','t'};
+String s = new String(ch);
+
+is same as
+
+String s = "puneet";
+
+String class implements Serializable , Comparable and CharSequence interfaces
+
+
+CharSequence Interface - is used to represent the sequence of characters.
+ ---->String ,StringBuffer and StringBuilder classes implement CharSequence.
+
+It means, we can create strings in java by using these three classes.
+
+-> The java String is immutable which means it cannot be changed.Whenever we change any string, a new instance is created.
+-> For mutable strings , you can use StringBuffer and StringBuilder 
+
+
+-------------------------------------------------------------------------------
+
+	What is String in java 
+Generally, String is a sequence of characters.But in java, string is an object that represents a sequence of characters.
+The java.lang.String class is used to create a string object.
+
+How to create a string object?
+2 ways
+--> By String literal
+--> By new Keyword
+
+String literal - using ""
+
+String s = "welcome";
+
+Each time you create a string literal ,the jvm checks the "string constant pool"
+first.If the string already exists  in the pool,a reference to the pooled instance is returned.
+If string doesn't exist in the pool , a new string instance is created and placed in the pool.
+For example: 
+String s1 = "Welcome";
+String s2 = "Welcome"; // it doesn't create a new instance 
+
+Note : String objects are stored in a special memory area known as String constant pool.
+
+-------
+****Why java uses the concept of String literal?
+To make java more memory efficient (because no objects are created if it exists already in the string constant pool).
+
+
+2) By new keyword
+
+String s = new String("Welcome");  // creates the objects and one reference variable.
+
+In such case , JVM will create a new string object in normal (non pool) heap memory , the literal "Welcome" will be placed in the string constant pool.
+The variable s will refer to the object in a heap (non-pool)
+
+---------------------------------------------------
+
+Example - 
+class StringExample{
+
+	main(){
+		String s1="java";
+		char ch[] = {'s','t','r','i','n','g','s'};
+		String s2 = new String(ch);
+		String s3 = new String("example");
+	}
+}
+
+----------------------------------------------------------------------
+
+	Immutable String in Java
+
+In java,string objects are immutable.Immutable simply means unmodifiable or unchangeable.
+Once string object is created its data or state can't be changed but a new string object is created.
+
+Example-: 
+
+String s = "Sachin";
+s.concat(" Tendulkar");
+sys(s); // will print Sachin 
+
+if 
+String s= "Sachin";
+s = s.concat("Tendulkar");
+sys(s) // will print Sachin Tendulkar
+
+--------------------------------------------------------------------------
+
+	Java String Compare
+
+1) used in authentication  by equals method
+2) used in sorting by compareTo() method
+3) used in reference matching (by == operator)
+
+
+ String s1="Sachin";  
+   String s2="Sachin";  
+   String s3=new String("Sachin");  
+   String s4="Saurav";  
+   System.out.println(s1.equals(s2));//true  
+   System.out.println(s1.equals(s3));//true  
+   System.out.println(s1.equals(s4));//false  
+
+
+String s1="Sachin";  
+   String s2="Sachin";  
+   String s3=new String("Sachin");  
+   System.out.println(s1==s2);//true (because both refer to same instance)  
+   System.out.println(s1==s3);//false(because s3 refers to instance created in nonpool)  
+
+
+Suppose s1 and s2 are two string variables. If:
+
+s1 == s2 :0
+s1 > s2   :positive value
+s1 < s2   :negative value
+
+String s1="Sachin";  
+   String s2="Sachin";  
+   String s3="Ratan";  
+   System.out.println(s1.compareTo(s2));//0  
+   System.out.println(s1.compareTo(s3));//1(because s1>s3)  
+   System.out.println(s3.compareTo(s1));//-1(because s3 < s1 )  
+
+
+-----------------------------------------------------------------------------
+
+	String Concatenation in java
+
+By +(string concatenation) operator
+By concat() method
+
+1) String Concatenation by + operator
+	String s="Sachin"+" Tendulkar";  
+   System.out.println(s);//Sachin Tendulkar  
+
+The java compiler transforms above to this: 
+
+String s=(new StringBuilder()).append("Sachin").append(" Tendulkar).toString();  
+
+In java,String concatenation is implemented through the StringBuilder(or StringBuffer)class and its append method.
+
+ String s=50+30+"Sachin"+40+40;  
+   System.out.println(s);//80Sachin4040  
+
+Note: After a string literal, all the + will be treated as string concatenation operator.
+
+2) String Concatenation by concat() method
+
+  String s1="Sachin ";  
+   String s2="Tendulkar";  
+   String s3=s1.concat(s2);  
+   System.out.println(s3);//Sachin Tendulkar  
+
+------------------------------------------------------------------------------
+
+		Java StringBuffer class
+
+is used to create mutable(modifiable) string.
+The StringBuffer is same as String class except it is mutable. i.e it can be changed.
+
+Note : Java StringBuffer class is thread-safe i.e. multiple threads can not access it simultaneously. So it is safe and will result in an order.
+
+StringBuffer sb=new StringBuffer("Hello ");  
+sb.append("Java");//now original string is changed  
+System.out.println(sb);//prints Hello Java  
+
+
+----------------------------------------------------------------------------
+
+
+	Java StringBuilder
+
+is used to create mutable string.same as StringBuffer except it is non-synchronized.
+
+StringBuilder sb=new StringBuilder("Hello ");  
+sb.append("Java");//now original string is changed  
+System.out.println(sb);//prints Hello Java 
+
+------------------------------------------------------------------------------
+
+	Diff b/w String and StringBuilder
+
+
+immutable 				mutable
+slow ,consumes more memory when 	fast ,consumes less memory when concat
+you concat too many strings because 
+every time it creates new instance 
+overrides equals of object		doesn't override equals of object class
+
+
+--------------------------------------------------------------------------
+
+	Diff b/w StringBuffer and StringBuilder
+
+synchronized 			non-synchronized
+less efficient 			more efficent
+
+--------------------------------------------------------------
+
+
+	How to create Immutable class?
+
+There are many immutable classes like String ,Boolean, Byte, Short ,Integer ,Float,Double,Long etc.
+In short all wrapper classes  and String class is immutable.
+
+We can also create immutable class by creating final class that have final data members 
+
+Example
+public final class Employee{
+	final String panCard;
+		
+	public Employee(String pancard){ this.pancard = pancard;   } 
+
+	public String getPancardnubmer(){ return pancard;  }
+}
+
+the class is final so we can't create subclass
+there is no setter method 
+instance variable final 
+
+-------------------------------------------------------------------------
+
+		Java toString() method
+
+If you want to represent any object as a string ,toString() method comes into existence 
+return string representation of the object.
+
+
+class Student{  
+ int rollno;  
+ String name;  
+ String city;  
+  
+ Student(int rollno, String name, String city){  
+ this.rollno=rollno;  
+ this.name=name;  
+ this.city=city;  
+ }  
+  
+ public static void main(String args[]){  
+   Student s1=new Student(101,"Raj","lucknow");  
+   Student s2=new Student(102,"Vijay","ghaziabad");  
+     
+   System.out.println(s1);//compiler writes here s1.toString()  
+   System.out.println(s2);//compiler writes here s2.toString()  
+ }  
+}  
+
+output: 
+Student@1fee6fc
+Student@1eed786
+
+----------------
+public String toString(){//overriding the toString() method  
+  return rollno+" "+name+" "+city;  
+ }  
+

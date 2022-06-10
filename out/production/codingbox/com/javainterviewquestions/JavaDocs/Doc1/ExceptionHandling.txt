@@ -1,0 +1,99 @@
+Exception Handling is the mechanism to handle the runtime errors so that normal flow of the application can be maintained.
+
+Exception - An exception is an unwanted or unexpected event,which occurs during the execution of the program i.e. at runtime and disrupts the normal flow of the application.
+
+		Error vs Exception
+
+An error indicates serious problem that a reasonable application should not try to catch
+
+Exception indicates conditions that a reasonable application should try to catch.
+
+Diff exceptions are ClassNotFoundException,IOException,SQLException,RemoteException,etc.
+
+		
+			
+		Hierarchy of Java Exception Classes
+			
+      			 Object
+
+			Throwable
+	
+	Exception			Error
+
+
+	   IOException			StackOverflowError 
+	   SQLException			VirtualMachineError
+  	   ClassNotFoundException	OutOfMemoryError
+	   
+	   RuntimeException
+		ArithmeticException
+                NullPointerException
+		NumberFormatException
+		IndexOutOfBoundsException
+                   ArrayIndexOutOfBoundsException
+		   StringIndexOutOfBoundsException
+
+
+
+
+		Types of Java Exceptions
+
+	1. Checked Exception
+	2. Uncheckd Exception
+	3. Error
+
+Checked Exceptions -: are exceptions that checked at the compile time.
+
+If some code within a method throws a checked exception,then 
+the method must either handle the exception or ,
+it must specify the exception using throws keyword
+
+
+UnChecked Exceptions -: are the exceptions that are not checked at the compile time.They are checked at the runtime.
+In java exceptions under Error and RuntimeException classes are unchecked exceptions, everytime else under throwable is checked.
+
+
+Error is irrecoverable eg OutOfMemoryError, VirtualMachineError, AssertionError etc,
+
+
+
+	Java exception keywords
+try - keyword used to specify a block where we should place exception code. try block must be followed by either catch or finally. It means we can't use try block alone.
+
+catch - catch blockk used to handle the exception. It must be preceded by try block which means we can't use catch block alone.It can be followed by finally block later.
+
+finally - finally block is used to execute the important code of the program. It is executed whether an exception is handled or not.
+
+throw - throw keyword is used to throw an exception 
+
+throws - throws keyword is used to declare exception. It doesn't throw an exception. It specifies that there may occur an exception in the method.
+
+
+
+			How JVM handle an exception?
+
+Whenever inside a method,if an exception has occured, the method creates an object known as Exception Object and hands it off to the run-time system (JVM). 
+The exception object contains name and description of the exception, and the current state of the program where exception has occured.
+Creating the exception object and handling it to the run time system is called throwing an exception.
+There might be the list of the methods that had been called to get to the method where exception was occured. This ordered list of the methods is called Call Stack.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

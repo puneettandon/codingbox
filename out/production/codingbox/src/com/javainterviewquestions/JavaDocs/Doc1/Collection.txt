@@ -1,0 +1,33 @@
+			Collections
+
+A Collection in java is a group of individual objects represented as a single unit.
+Java provides Collections framework which defines several classes and interfaces to represent a group of objects as a single unit.
+
+Java Collections can achieve all the operations that you perform on a data such as searching ,sorting ,insertion, manipulation and deletion.
+
+Why we group up objects?
+
+1. Suppose when we issue a query to database, then in response to query a lot of objects may come.....to java application as a result.
+
+To store these objects we can use array but as we know array are fixed in size ......so in such a situation we require java collection.
+
+2. Suppose we want to pass n number of objects of similar type to a method then first 
+
+Before Collection framework(or before JDK1.2) was introduced,the standard methods for grouping java objects(or collections) were Arrays or Vectors or Hashtables. All of these collections had no common interface.
+
+
+
+	
+		Hierarchy of Collection Framework
+		
+		Iterable(I)
+	
+		     Collection    (I)                      Map(I)
+	
+	Set(I)         List(I)          Queue(I)   	      SortedMap(I)
+
+	  HashSet(C)        ArrayList(C)    PriorityQueue(C)
+	  LinkedHashSet(C)  LinkedList(C)   Deque(I)
+                            Vector(C)           
+         SortedSet(I)         Stack(C)
+           TreeSet(C)

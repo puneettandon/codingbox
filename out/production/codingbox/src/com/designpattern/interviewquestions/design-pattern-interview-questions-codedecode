@@ -1,0 +1,239 @@
+Imp Links :
+https://www.youtube.com/watch?v=JFvSCobD7JU
+https://github.com/codedecode25/design-patterns
+
+1) Categories Java Design Patterns
+
+We can categorize design patterns into following categories -
+
+    Creational Patterns
+    Behavioral Patterns
+    Structural Patterns
+    J2EE Patterns
+
+
+2) Why do we need Design Pattern
+
+- As Design Patterns are well documented and understood by software architects, designers and developers,
+then their application within a specific solution will likewise be well understood.
+- Patterns give a software developer an array of tried and tested solutions to common problems,
+thus reducing the technical risk to the project by not having to employ a new and untested design,
+thus saving time and effort during the implementation stage of the software development lifecycle
+- They are language neutral and so can be applied to any language that supports object-oriented
+- By using well understood and documented solutions, the final product will have a much higher degree of
+comprehension.If the solution is easier to comprehend, then by extension, it will also be easier to maintain.
+
+3) What are the Creational Patterns?
+
+Creational design patterns are related to the way of creating objects.
+This pattern is used to define and describe how objects are created at class instantiation time
+ex - Employee emp = new Employee()
+
+4) Creational Design Pattern Categories
+
+ Factory Method
+ Abstract Factory
+Builder
+Prototype
+Singleton
+
+5) What Is Factory Pattern?
+In the Factory pattern, we don't expose the creation logic to the client and refer the created object using a standard interface.
+The Factory Pattern is also known as Virtual Constructor.
+Steps:
+1) create main class which call factory class.
+2) Factory class returns required class instance
+
+Main -> Factory class   ->
+                Profession
+ Engineer         Doctor          Teacher
+
+ https://github.com/codedecode25/design-patterns/tree/master/src/factory/pattern
+
+ public class FactoryPatternMainClass {
+
+ 	public static void main(String[] args) {
+ 		ProfessionFactory professionFactory = new ProfessionFactory();
+
+ 		Profession doc = professionFactory.getProfession("Doctor");
+ 		doc.print();
+
+ 	}
+
+ }
+
+ public class ProfessionFactory {
+
+ 	public Profession getProfession(String typeOfProfession){
+ 	      if(typeOfProfession == null){
+ 	         return null;
+ 	      }
+ 	      if(typeOfProfession.equalsIgnoreCase("Doctor")){
+ 	         return new Doctor();
+
+ 	      } else if(typeOfProfession.equalsIgnoreCase("Engineer")){
+ 	         return new Engineer();
+
+ 	      } else if(typeOfProfession.equalsIgnoreCase("Teacher")){
+ 	         return new Teacher();
+ 	      }
+
+ 	      return null;
+ 	   }
+
+ }
+
+ public interface Profession {
+
+ 	void print();
+
+ }
+
+ public class Doctor implements Profession{
+
+ 	@Override
+ 	public void print() {
+ 		System.out.println("In Print of Doctor class");
+
+ 	}
+
+ }
+
+ public class Engineer implements Profession{
+
+ 	@Override
+ 	public void print() {
+ 		System.out.println("In Print of Engineer class");
+
+ 	}
+
+ }
+
+ public class Teacher implements Profession{
+
+ 	@Override
+ 	public void print() {
+ 		System.out.println("In Print of Teacher class");
+
+ 	}
+
+ }
+
+
+
+6) What Is Abstract Factory Pattern?
+This factory is also called as factory of factories.
+Abstract Factory lets a class returns a factory of classes.
+So, this is the reason that Abstract Factory Pattern is one level higher than the Factory Pattern.
+An Abstract Factory Pattern is also known as Kit.
+       Steps:
+       1) create main class which call factory of factory class.
+       2) Factory of factory / factory Producer creates instance of factory class.
+       3) Factory class returns required class instance
+
+https://github.com/codedecode25/design-patterns/tree/master/src/abstract_factory/pattern
+
+7) What Is Singleton Design Pattern?
+Singleton pattern is one of the simplest design patterns in Java.
+This pattern involves a single class which is responsible to create an object while making sure that only single object gets created.
+This class provides a way to access its only object which can be accessed directly without need to instantiate the object of the class.
+   Steps:
+   1) create main class which call CacheImpl Class.
+   2) CacheImpl class has 2 methods : 1st to load the key value in map and create the cache. 2nd to return the required cloned object.
+   3) The main class , parent of all reuired concerete class contains cloning technique. Rest concrete class are normal POJOs, nothing special.
+
+private constructor
+static instance method
+static variable of that class
+https://github.com/codedecode25/design-patterns/tree/master/src/singelton/design/pattern
+
+8) What is prototype design pattern?
+- Prototype pattern refer to creating duplicate object while keeping performance in mind.
+- It involves implementing a prototype interface which tells you to create a clone of current object.
+- This pattern is used when when creation of object directly is costly.
+For example it requires database calls or required too much of processing that will take a lot of money.
+- What can be done? we can cache the object , return its clone on next request.
+    Steps:
+    1) create main class which calls CacheImpl class
+    2) CacheImpl class has 2 methods: Ist to load key value in map and create the cache.2nd to return the required cloned object.
+    3) The main class , parent of all required concrete class contains cloning technique.Rest concreate class are normal POJOs, nothing special.
+
+https://github.com/codedecode25/design-patterns/tree/master/src/prototype/pattern
+
+sourcecode -
+public class PrototypePatternMainClass{
+    public static void main(.....){
+        ProfessionCache.loadProfessionCache();
+
+        Profession docProfession = ProfessionCache.getCloneNewProfession(1);
+        sout(docProfession);
+
+        Profession engProfession = ProfessionCache.getCloneNewProfession(2);
+        sout(engProfession);
+
+        Profession teachProfession = ProfessionCache.getCloneNewProfession(3);
+        sout(teachProfession);
+
+        Profession docProfession2 = ProfessionCache.getCloneNewProfession(1);
+        sout(docProfession2);
+    }
+}
+
+public class ProfessionCache{
+    private static HashTable<Integer,Profession> professionMap = new HashTable<Integer,Profession>();
+
+    public static Profession getCloneNewProfession(int id){
+        Profession cachedProfessionInstance = professionMap.get(id);
+        return (Profession) cachedProfessionInstance.cloningMethod();
+    }
+
+    public static void loadProfessionCache(){
+        Doctor doc = new Doctor();
+        doc.id = 1;
+        professionMap.put(doc.id,doc);
+
+        Engineer eng = new Engineer();
+        eng.id = 2;
+        professionMap.put(eng.id,eng);
+
+        Teacher teach = new Teacher();
+        teach.id = 3;
+        professionMap.put(teach.id,teach);
+    }
+}
+
+public abstract class Profession implements Cloneable{
+
+    public int id;
+    public String name;
+
+    abstract void print();
+
+    public object cloningMethod(){
+        Object clone = null;
+        try{
+            clone = super.clone();
+        }catch(CloneNotSupportedException e){
+            e.printStackTrace();
+        }
+        return clone;
+    }
+}
+
+
+
+
+9) What Is Builder Design Pattern?
+Builder Pattern refers to approach that focuses on constructing a complex object from simple objects using step-by-step approach.
+
+Major roles used in this design patterns are :
+   Complex Object / Final Product – e.g. house – complex object which we will generate with builder design pattern
+   Builder – abstract class / interface that defines all ways to create the product.
+   It also has getFinalProduct method that will finally return complex object.
+
+   ConcreteBuilder – multiple Builder Impls that will give different final objects which are complex to design,
+   Director: Controls complex object creation. It has 2 main goals : 1st to call appropriate concrete builder class to create correct complex object.
+   2nd to return that complex object.
+
+https://github.com/codedecode25/design-patterns/tree/master/src/builder/design/pattern
+

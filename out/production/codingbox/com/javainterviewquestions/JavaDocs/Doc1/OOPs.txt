@@ -1,0 +1,56 @@
+Object -  Any entity that has state(features and attributes) and behaviour(methods).
+	  Ex - table,chair,pen,laptop, etc 
+	  Can be physical or logical.
+
+	  An object consists of : 
+		1. State (properties of an object)
+		2. Behaviour (methods of an object)
+		3. Identity (unique name to an object)
+
+	  Example of an object: dog
+
+	   Identity : Name of dog
+	   State : Breed,Age,Color
+	   Behaviour : Bark,Sleep,Eat 
+		
+	   An object can be defined as an instance of a class.
+
+
+
+Class - Collection of objects is called class. 
+	It is a logical entity.
+	A class is a blueprint from which you can create an individual object.
+	It represents the set of properties or methods that are common to all objects of one type.
+
+
+
+
+			Inheritance 
+- Mechanism in java by which one class is allow to inherit the features(fields and methods) of another class.
+- Code reusability
+- Runtime polymorphism
+
+   Important terminology:
+	Super class - The class whose features are inherited is known as super class.
+	Sub class - The class that inherits the other class is known as sub class. The subclass can add its own fields and methods in addition to the superclass fields and methods.
+
+  -Keyword for inheritance is - extends
+
+	class derived-class extends base-class
+	{
+		//methods and fields
+	}
+
+   - In practice, inheritance and polymorphism are used together in java to achieve fast performance and readability of code.
+
+	
+		Type of Inheritance in java
+                   
+1. Single Inh -  class A , class B ext A
+
+2. Mulitlevel Inh - class A, class B ext A ,class C ext B
+
+3. Hierarchical Inh -  class A , class B ext A ,
+ 		       class C ext A, class D ext A
+
+4. Multiple Inh - class A , class B , class C ext A,B (in java not supported in classes) supported through interfaces

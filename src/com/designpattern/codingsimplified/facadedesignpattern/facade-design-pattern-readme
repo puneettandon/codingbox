@@ -1,0 +1,11 @@
+Facade Design Pattern
+
+Properties
+-> Structural Design pattern
+-> Used when there are multiple interfaces of similar kind of jobs, then we add a facade interface,
+which provide better interface to these interfaces and clients. It basically help in
+routing to related interface.
+i.e. Drivers , Databases
+
+Implementation
+-> We will implement a facade helper class, which will route to method related to specific class based on input

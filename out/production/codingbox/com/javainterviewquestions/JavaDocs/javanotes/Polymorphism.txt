@@ -1,0 +1,126 @@
+			Polymorphism
+
+Polymorphism in java is a concept by which we can perform a single action in different ways. Polymorphism is derived from 2 words - poly means many and morphs means forms.So means many forms
+
+
+	2 types of polymorphism in java 	
+
+1) Compile time polymorphism - by Overloading
+2) Runtime polymorphism	- by Overriding
+
+see overloading and overridding for reference.
+	
+
+		Runtime Polymorphism in Java
+
+Runtime polymorphism is a process in which a call to an overriden method is resolved at runtime rather than compile time.
+
+In this process, an overriden method is called through the refernence varibale of a superclass.
+The determination of the method to be called is based on the object being referred to by the reference variable.
+
+
+		
+		Example of Java Runtime Polymorphism
+
+class Bike{
+	void run(){	sys("running");	}
+}
+
+class Splender extends Bike{
+	void run(){	sys("running safely with 50km");	}
+
+	psvm(){
+		Bike b = new Splendor(); // Upcasting
+		b.run();
+	}
+}
+
+Output:
+running safely with 50km
+
+
+Example 2 
+class Bank{	
+	float getRateOfInterest(){	return 0;	}
+}
+
+class SBI extends Bank{
+	float getRateOfInterest(){	return 8.3f;	}
+}
+class ICICI extends Bank{
+	float getRateOfInterest(){	return 7.3f;	}
+}
+
+class Axis extends Bank{
+	float getRateOfInterest(){	return 9.3f;	}
+}
+
+
+class TestPolymorphism{
+
+	psvm(){
+
+		Bank b;
+		b = new SBI();
+		sys("SBI ROI: " +b.getRateOfInterest());	
+	
+		b = new ICICI();
+		sys("ICICI ROI: " +b.getRateOfInterest());
+
+		b = new Axis();
+		sys("AXIS ROI: " +b.getRateOfInterest());
+		
+	}
+}
+
+
+---------------------------------------------------------------------------
+
+
+
+Runtime polymorphism can't be achieved by data members.
+
+A method is overriden,not the data members, so runtime polymorphism can't be achieved by data members.
+
+class Bike{
+	int speedlimit = 90;
+}
+
+class Honda extends Bike{
+	int speedlimit = 140;
+
+	psvm(){
+		Bike obj = new Honda();
+		sys(obj.speedlimit);
+	}
+}
+
+output: 
+90
+
+
+	Java Runtime Polymorphism with Multilevel Inheritance
+
+class Animal{
+	void eat(){	sys("eating");	}
+}
+
+class Dog extends Animal{
+	void eat(){	sys("eating fruits");	}
+}
+
+class BabyDog extends Dog{
+	void eat(){	sys("drinking milk");	}
+
+	psvm(){	
+		Animal a1,a2,a3;
+		a1 = new Animal();	a2 =new Dog();	a3 = new BabyDog();
+		a1.eat();		a2.eat();	a3.eat();
+	}
+}
+
+
+output:
+eating
+eating fruits
+eating milk

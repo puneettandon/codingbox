@@ -187,8 +187,7 @@ class BST{
 
     Node prev = null;
     public boolean isBST2(Node node) {
-        if(node != null)
-        {
+        if(node != null){
             if(!isBST2(node.left))
                 return false;
 
@@ -201,7 +200,6 @@ class BST{
     }
 
     public boolean CheckIfTwoBSTContainSameElement(Node node1, Node node2) {
-
         List<Integer> list1 = new ArrayList<>();
         List<Integer> list2 = new ArrayList<>();
 
@@ -210,7 +208,6 @@ class BST{
 
         return list1.equals(list2);
     }
-
 
     private void inorderC(Node node, List<Integer> list) {
         if(node == null)
@@ -351,7 +348,7 @@ public class BSTApp {
         System.out.println(parentNode != null ? parentNode.data : "Parent does not exist");
 
         System.out.println("Get Sibling Node of given value in BST: ");
-        Node siblingNode = tree.getSiblingNode(root,8);
+        Node siblingNode = tree.getSiblingNode(root,4);
         if(siblingNode != null){
             System.out.println(siblingNode.data);
         }else {

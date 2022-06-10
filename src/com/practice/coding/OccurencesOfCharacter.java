@@ -9,6 +9,7 @@ public class OccurencesOfCharacter {
         String charOccurence = "l";
 
         System.out.println("occurence of char = " + charOccurence + " is : " +findOccurencesOfCharacter(str,charOccurence));
+        System.out.println("occurence of char Practice1 = " + charOccurence + " is : " + findOccurrencesOfCharacterPractice1(str,charOccurence));
     }
 
     private static int findOccurencesOfCharacter(String str, String charOccurence) {
@@ -19,4 +20,19 @@ public class OccurencesOfCharacter {
 
         return initialLength - finalLength;
     }
+
+    private static int findOccurrencesOfCharacterPractice1(String str, String charOccurrence){
+        int count = 0;
+        for(int i = 0;i<str.length();i++){
+            String value = String.valueOf(str.charAt(i));
+            if(value.equals(charOccurrence)){
+                count++;
+            }
+        }
+        return count;
+    }
+
+
+
+
 }
