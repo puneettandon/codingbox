@@ -1,0 +1,14 @@
+Adapter Design Pattern
+
+Properties
+-> Structural Design Pattern
+-> When objects offering same features, but has different interface i.e. Charging adapter , USB to Ethernet Adapter
+-> It allows exiting classes to be used with others without modifying their source code
+-> i.e. : WebDriverAdapter
+
+Implementation
+-> Interface: WebDriver
+-> Interface Implementation : ChromeDriver, WebDriverAdapter
+-> Adapter : WebDriverAdapter
+-> Adaptee : IEDriver
+-> Client : AdapterPatternTest

@@ -538,6 +538,9 @@ public class BinaryTreeApp {
 
         System.out.println("Check if parent contain sum of both children "+ tree.checkIfParentSumOfChildren(root5));
 
+        // Diameter of binary tree
+
+
 
     }
 }

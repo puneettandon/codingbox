@@ -1,0 +1,156 @@
+Payment Gateway System Design
+
+Example - Paypal , Razorpay
+
+                                    Terms to Note
+
+What is payment gateway?
+-> A service which allows us to make payments online while making purchase from e-commerce website.
+-> It supports paying through card, internet banking, e-wallets etc.
+-> Mostly integrated with websites like e-commerce and it will support the seller to basically collect payment in
+various ways from the user.User can buy item using credit card , debit card, internet banking e-wallet
+gift card all those things. so everything will be supported by the payment gateway.
+
+What is PSP(Payment Service Provider)?
+-> It is the service/person/system which make sure that money is transferred from buyer's account to merchant's account.
+-> Will be integrated as part of payment gateway itself.
+
+What is Issuer Bank?
+-> This is the bank to which Buyer is related to.So this is the bank which has issued the debit card or the credit card
+or the upi to the user so that they can go and buy stuff online.
+
+What is Card Association?
+-> This is the entity which links a card number to it's relevant Issuing Bank like Visa,Mastercard,American Express.
+
+What is PCI DSS (Payment Card Industry Data Security Standard)?
+-> It is the security standard , if the seller is compliant with this standard then payment page can be generated
+on seller's page else they need to redirect the request to payment gateway's payment page, which is compliant to
+standard.
+-> If you want to store a secure data which is related to your card so if you want to store the card number,
+the expiry date and name of person in your database you need to be compliant with this standard so all the payment
+gateway should be compliant with this standard.
+
+What is Acquiring Bank?
+-> Bank associated with the seller's payment processor(Think of it as an e-POS machine).
+
+What is 3D secure?
+-> It is  a protocol defined by visa and now used by all card association for added security of online card
+transactions.
+
+What is ISO-8583?
+-> EFT switch message format for card payment processing
+
+
+--------------------------------------------------------------------------------
+
+                                    How Card Payment works?
+
+-> For card payment, there will a UI where your details will be captured. So this UI can be on the seller side or
+like amazon or flipkart or it can be on payment gateway side. So payment gateway can also expose the UI if the
+ecommerce website is not PCI DSS compliant. so in that particular case in the payment gateways UI you will enter
+all your card details.
+-> Once the card details is entered over ssl. This is sent to merchants application so this is the case where your
+merchant is integrated with payment gateway and the merchant application will also have a unit or a service which
+will be used for payment processing so they will not do much it will just capture those details and in secured
+way it will transfer it to the payment gateway.
+-> Now over ssl , this is sent to payment gateway. what payment gateway now will do is like we talked about all these
+messages will be in xml , json or the format which merchant application understand or payment gateway understand or
+whatever merchant has decided to use the the format for their application but that does not work in the payment
+industry.
+-> From payment gateway side it will convert that xml json or any other format into iso 8583 standard
+-> So this will be sent to a payment processor now payment processor is used by merchants acquiring banks.
+In most cases payment gateway and payment processor will be used together. There are some cases where payment processor
+is separate from payment gateway but in this scenario we will say that both are separate entity.
+-> Payment processor will receive the eft switch message so it has to understand that I need to make payment
+using card transaction so what it will do is it will send the message to the card association so card association are
+the entities like visa/mastercard
+-> What these entities will do is they will receive this message and they know that which particular card number is
+associated with which bank so suppose you have a card number . Card Association has a directory and there they know
+which set of number is issued to which bank.
+-> And they will redirect the request to the issuer bank which is hdfc bank or it will redirect the message that it
+has got the correct issuer bank now issuer bank it will make that transaction or it will verify the transaction
+whether the card is valid or not whether it belongs to the correct user whether the cvv given is right whether
+pin given is right all those authorization will happen and then it will check whether there is balance
+in the account for the given payment or not.
+-> So if everything is successful then issuer bank will authorize the payment
+and it will deduct the balance and it will send the message back to card association saying that I have received
+the payment and transaction is good.and then card association will go back to payment processor go back to
+payment gateway  and finally the sale will be done
+-> This is the overall picture of how payment happens.
+-> Now at any point if there is failure , then the same has to be handled by payment gateway using payment processor
+
+---------------------------------------------------------------------------------------------------------
+
+                                How 3D secure Card Payment works?
+
+-> Difference b/w normal payment and 3D secure card payment.For 3D secure everything is same till payment gateway
+3D means 3 Domains involved.
+-> 1 Domain - Acquiring Domain which is on the payment processor side with the acquiring bank. This is small
+plugin which will be given by the acquiring bank and this domain comes with a small piece of software and that
+software is used for encrypting the message and decrypting the message also so all those will talk about how all those
+works in the coming session
+-> So what you need to understand is that once the payment gateway received the iso 8583 message what acquiring
+domain will do is it will now convert it into a secured message it will encrypt it or whatever is the logic that
+has been written for that particular piece of software so it will do its job and finally it will send the message
+to the card association
+-> so here seller Domain will send the card detail and to inter portability domain so what inter portability domain is
+that on the card association side is that on the card association side we have an inter portability domain which is
+nothing but a set of directory , it will make a check there that whether actually a issuing bank is existing for
+the given transaction or not. so it will the directory from where it will check and if the card is fake or it is not
+valid (may be expired ) . so in those situations it will not go even further it will basically come out from here only
+saying card is not valid and transaction has failed.So that's the use of inter portability
+-> If card is valid one this inter portability domain will send response back to the acquiring domain saying that it
+is success and it will give you url which will be for your access control server.
+-> Access Control Server is the server which is on the issuing bank side issuing bank is the bank which has given you
+the card.So it will give that server detail and url to the acquiring bank and now the payment processor can make the
+request to the issuer with this access control server link and it can send or receive the secure message and it will
+send the actual request which is the card detail with cvv pin everything to the issuer bank and here in the access
+control server side again there is a piece of software which is running which can decode this message and it will
+do the authorization.
+-> so once the authorization is done, everything is checked here and if the payment is successful in that case
+or even if the payment is failure in that case it will be sent back to the processor with a code and that code will
+tell us what is the reason for failure or if it is success then transaction is success.
+-> Now same request from here will go to payment gateway then it will be displayed that order will be placed
+otherwise failure message will be displayed so on that payment has failed and what is the reason for failure.
+
+
+-----------------------------------------------------------------------------------------------------------------
+
+                      Requirements for System Design of Payment Gateway
+
+
+
+Functional Requirement
+-> Allows multiple ways of payment like card ,upi , netbanking etc
+-> Secure Payment Details
+-> Secure Transactions
+-> Avoid double payment
+-> Fast Response
+-> Handle Timeout and failure
+
+
+Non Functional Requirement
+-> Highly Consistent
+-> Highly Available
+-> Scalable
+
+trade off partition tolerant
+
+
+------------------------------------------------------------------------------------------------------
+
+                                Design Considerations
+
+-> Multiple subsystems to handle different kind of payments like card, internet banking, upi etc
+-> Secure payment details, may be use some tools like Protegrity to encrypt PII fields
+-> Use SSL
+-> Consistency and Availability should be chosen over partition tolerance, one way will be to save the transaction
+message Ist and then use it
+-> Need scalable system because number of payments per day can be like 10M
+
+
+
+
+
+
+

@@ -1,0 +1,15 @@
+Bridge Design Pattern
+
+Properties
+-> Structural Design Pattern
+-> Used when we have hierarchies  in both interface as well as implementations & we want to hide the implementation
+from the client
+-> It decouple abstraction from it implementation
+-> Generally we have remote , which works differently for Sony & Philips TV, but we can have different Remote
+as well , i.e. OldRemote & NewRemote , which have different methods for Each TV.
+-> i.e. : TV & Remote implementation
+
+Implementation
+-> class hierarchy: TV,SonyTV,PhilipsTV
+-> Interface hierarchy: Remote, OldRemote, NewRemote
+-> Client: Client class
