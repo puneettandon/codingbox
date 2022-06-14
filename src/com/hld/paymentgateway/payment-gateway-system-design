@@ -1,5 +1,6 @@
 Payment Gateway System Design
 
+https://www.youtube.com/watch?v=NxjGFIgFCbg
 Example - Paypal , Razorpay
 
                                     Terms to Note
@@ -122,16 +123,16 @@ otherwise failure message will be displayed so on that payment has failed and wh
 
 Functional Requirement
 -> Allows multiple ways of payment like card ,upi , netbanking etc
--> Secure Payment Details
+-> Secure Payment Details -
 -> Secure Transactions
--> Avoid double payment
+-> Avoid double payment - (should not happen that the issuer is charged twice or the buyer is charged twice)
 -> Fast Response
--> Handle Timeout and failure
+-> Handle Timeout and failure ( should be mechanism of retry if transaction is timed out or failed )
 
 
 Non Functional Requirement
 -> Highly Consistent
--> Highly Available
+-> Highly Available (because if it is not available there will be failure in transaction in between and no one is going to use it)
 -> Scalable
 
 trade off partition tolerant
@@ -141,15 +142,141 @@ trade off partition tolerant
 
                                 Design Considerations
 
--> Multiple subsystems to handle different kind of payments like card, internet banking, upi etc
--> Secure payment details, may be use some tools like Protegrity to encrypt PII fields
--> Use SSL
+-> Multiple subsystems to handle different kind of payments like card, internet banking, upi etc. example -
+one api to handle card payment, one api to handle upi payment, one to handle internet banking etc .....because all these
+modes are different (not related to each other) so different types of payments will follow different procedures and
+that is wny it should be decoupled.
+-> Secure payment details, may be use some tools like Protegrity to encrypt PII fields as you are going to store the
+data or transaction in database. so required to secure the payment details.All details should be encrypted for
+that purpose
+-> Use SSL - whenever sending the transaction you should use SSL. cannot send in plain text way.
 -> Consistency and Availability should be chosen over partition tolerance, one way will be to save the transaction
-message Ist and then use it
+message Ist and then use it. There should be some way in which if there is a failure we should be able to handle that
+and avoid the duplicate payment or the loss of money for buyer or seller.So that's way we need to save the transaction
+and also to secure that transaction.
 -> Need scalable system because number of payments per day can be like 10M
 
 
+--------------------------------------------------------------------------------------------------------------------
 
+
+                          High Level Design Architecture
+
+                          Payment Ingestion
+
+-> So we have the seller website.From seller website we will get the all card details or seller will send the
+card detail to us directly or it will send the request to payment gateway to expose the UI to the buyer so that
+they can enter the card detail there.
+-> So once we have exposed the UI or the seller has sent the details to us what we need is we need an ingestion
+system where we need to ingest the payment that is coming through.
+-> So what payment ingestion service will do is it will ingest the transaction it will save the transaction in our
+database.
+-> Now to save this transaction we need a transaction id generator . It will create a unique id which will be
+associated to this particular payment.Since now it is associated to this particular payment anytime we need to retry
+or some failure happens or we need to debug we can use this id to track this whole payment because in our
+scenario we will send the request to outside and from outside we will get the response. Outside means the if it is
+a card transaction we are making a call to the card association we are making a call to the control access
+server of the issuer bank . so everywhere this transaction id should be used for tracking of this transaction in an
+atomic way.
+-> So once we have the transaction id generator we will save the detail in our database. we will save the
+transaction id and other payment details . Other payment detail comprises of type of payment that we are getting from
+sellers website whether it is card or upi or any other payment.
+-> The first column is transaction id and second column can be your type of payment then you will have another column
+which will store the id of that payment type. ie so if it is card payment so need to store the card number
+if it is internet banking then you might need to store the internet banking userid if it is upi you need to store
+upi id. And one column for amount of the transaction. And you also need to store this transaction belongs to which
+merchant basically when clearing happens which merchant bank or which merchant account should be credited with the
+payment
+-> As data we are getting is structured  so RDBMS is good choice
+-> We can also have another database which will pull the data from here and store for analytics purpose.
+-> so once we have stored the data in our database we will put the message in a distributed queue because we want to
+decouple the injection system from processing system
+-> And Payment processor system will pick up the message from queue and it will do its processing.
+-> finally once in a very good scenario once the payment is done it is successful or if it fails
+payment processor will update the database for this transaction id saying whether it is successful or failed.
+-> How you will make sure the query on this RDBMS  database is very fast.so you need a partition strategy or some way
+in which you can speed up the query.One way is you partition all your table based on date so everyday will have one
+partition . Now you can create a sub partition for rdbms that sub partition can be based on type of the transaction
+like upi, net banking , card . Date - arranged partition ....sub-partition - list partition (partition pruning
+for more info)
+-> This is overall architecture of payment ingestion
+-> There will be analytics service as well - why we need analytics system here is that it can talk to the queue and
+it can also pull some data from this database(RDBMS)  or better way will be that there can be a service (a separate
+service) which will pull the data from this database.
+-> what it will do is it can put it in some other database which can be rdbms or it can be a no sql database also.
+No-SQL columnar database can be a good choice if you want to perform analytics like handling the failure scenario
+so if you pull all the detail from this database where there was a failure for a particular type of card transaction
+or a internet banking So what you can do is the analytics system can compute a stats that if the transaction was
+coming from visa card x% of transaction failed today. if it was coming from a upi payment y% of transactions failed
+today.
+-> Now these analytics can be sold to seller which is amazon or flipkart . They can also show the data to the user
+during payment that failure percentage is high for this particular payment method.
+
+------------------------------------------------------------------------------------------------------------------
+
+                            Relevant APIs
+
+-> Payment Ingestion
+    -> getFormForCardPayment
+    -> postRequestForCardPayment
+    -> getFormForUPIPayment
+    -> postRequestForUPIPayment
+    -> getFormForInternetBanking
+    -> postRequestForInternetBanking
+    -> getTransactionIDByTransactionType
+
+-> PaymentProcessor
+    -> processUPIPayment
+    -> processCardPayment
+    -> processInternetBankingPayment
+    -> retryOnFailure
+    -> getISO8583FormatMessage
+
+----------------------------------------------------------------------------------------------------------------
+
+                            Payment Processor Architecture
+
+Continuing from payment ingestion
+-> We know that once we have put the message from ingestion service into distributed queue, it will be picked by the
+payment processing service.So what payment processing service will do is , it will have a plugin and this particular
+plugin will send the request to the plugin for acquiring domain it will send the request to the inter portability
+domain and from there it will get the url for the access control server  so all those piece of code will go in payment
+processing service , it will have all those modules to do the payment and finally once the payment is done then it
+will update the status or it will update the status of the payment in the database and in case of failure what it
+will do is it will put the message in a same distributed queue but topic will be different . so it can put the message
+in a failed queue so it can be the same queue that we are using if you are using kafka or any other distributed queue
+so you create new topic for just dumping the failed messages.so once the failure is done you update the message you
+update the status in database saying that this payment has failed and put the message in queue saying that this is the
+transaction which has failed .
+-> why this queue is helpful - because there will be another service will be your payment retry service will be
+listening to this particular queue and what it will do is it will check for that transaction that what is the status
+if it has failed then it will retry read write that particular payment and since the transaction id is unique so
+when it makes a request to the card association or issuer bank with the same transaction id it will get status
+from them that this payment was already processed  so if it was already processed and it failed in between in that
+particular system this payment retry service will update the database simply saying that the payment has been
+successful it will not duplicate the payment so that is the benefit of this retry
+-> And finally we have a clearing service so once all the payment is done so till now whatever we are talking about was
+from the buyers point of view now when the buyers point of view is immediately the money was deducted from buyers bank
+and it was parked somewhere now from this somewhere account or in some account it has to go to the account of seller
+So this clearing service it will read the database and it will pick up all the successful transactions and in the
+database also we can one more column which will say that transaction is cleared or not .so it will pick up all the
+transactions for that day which is not clear so this clearing will happen like once in a day at the end of day or it
+can happen like twice in a day
+-> So what this clearing process will do is it will pick all the transactions that are not cleared yet and it will
+settle the account .so if suppose seller 1 , there were 10 users who bought the product from seller one so whatever is
+the amount that the seller one has to send or whatever is the amount that seller one will get after deducting of
+course the charge for the payment processing and e-commerce site the same will be credited into their account
+so that part of handling will again be done by clearing service so clearing service will again follow the same procedure
+which we were using for card transaction only this time it will use the internet banking facility or the clearing
+house facility . Initially when the money is deducted from buyer's account it was parked into the account which was
+owned by acquiring bank of the seller or the merchant basically which in this case is amazon .Now when clearing
+happens the money will be deducted from the acquiring banks account and it will be sent to each of the individual
+seller so that is where the payment clearing service will come into picture and it will be part of payment
+gateway itself
+-> If this transaction has failed the same logic will apply it will put the message in failed queue and a retry will
+happen
+-> For clearing service , a transaction id will be generated for clearing so this transaction id will basically map
+all the transaction that happened for that seller on that particular day or whatever is the clearing time
 
 
 
