@@ -1,0 +1,40 @@
+Load Balancer
+
+What is Load Balancer?
+-> A traffic router which distributes request across servers in a cluster
+-> It balances the load of website.So let's say whenever you site is too big. So a single node cannot handle the
+whole load.so we need many resources.Then we manage load b/w different resources.
+-> It helps to distribute load across multiple resources
+-> It also keep track of status of all the resources while distributing requests.If a server is not available,
+it stops sending traffic.
+-> Distribution of requests make sure that none of the servers are loaded
+-> Helps in making sure that request does not go to to a dead server
+-> Decides which server in the cluster is most suitable for handling any incoming request
+
+Where it can be added
+-> Users - web server
+-> Web server -  Internal Server
+-> Internal Server - Database
+
+Types of Load Balancers
+--Hardware  LB:
+    -> They are hardware which work as LB, but are very expensive.
+    -> Even big companies use them only as first point of contact & use other mechanism for load-balancing
+    -> More secure and higher throughput
+
+--Software  LB:
+    -> It is a hybrid approach. HAProxy is popular open source software LB.
+    -> Every client request on this port(where HAProxy is running ) will be received by proxy & then passed
+    to the backend service in efficient way.
+    -> HAProxy manages health check & will remove or add machines to those pools.
+    -> we should start with these.
+    -> Less secure and lesser throughput
+
+
+Algorithms used for Load Balancing:
+-> Round Robin
+-> Round Robin with weighted server
+-> Least Connections
+-> Least Response Time
+-> Source IP Hash
+-> URL Hash

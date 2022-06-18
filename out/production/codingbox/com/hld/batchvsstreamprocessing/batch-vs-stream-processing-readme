@@ -1,0 +1,42 @@
+Batch vs Stream Processing
+
+https://www.youtube.com/watch?v=A3Mvy8WMk04
+
+Batch
+-> Ad-hoc Scheduled processing
+-> Collection of data
+
+
+
+Stream
+-> Real time processing
+-> Continuous data
+
+
+Micro-Batch ( mix of Batch and Stream)
+-> Collection of data & processing continuously in short span of time
+
+----------------------------------
+
+When to use Batch Processing....
+
+Files
+EOD(End of Day)  feeds
+
+Can use big-data processing frameworks like Apache Spark or Hadoop.
+They will parse the files , process them , transform into some format and store into databases.
+These database could be hive, or hadoop hdfs .
+
+
+When to use Stream Processing....
+
+Multiple applications tries to publish into kafka topic ( information could be anything like accessibility information)
+Kafka topic uses different tools like apache flink or apache storm ....to consume these messages real time and processed
+into data store.
+
+
+------------------------------------------
+
+Use Case : Analytics Application - Imaginary
+Similar to Google Analytics or Adobe Analytics
+

@@ -1,0 +1,86 @@
+CAP Theorem
+
+C - Consistency
+A - Availability
+P - Partition Tolerance
+
+see Cap-distributed-system-example.png
+Distributed System
+
+Suppose different nodes
+Main node - A
+Replica - Node B,E
+
+Consistent
+Suppose A updates something on E , then E should also propagate same update to B.
+And If A immediately accesses same thing on B, and A gets the outdated result then that would make
+system inconsistent.But if A get updated result , then system is consistent.
+
+
+Available
+Suppose A query something from E,but  does not get any   response from E.
+ Then E is said to be unavailable. But if E responds to the queries  everyone then E is said to be
+ available.
+
+
+Partition Tolerant
+Suppose there is a cluster of nodes.Suppose Cluster functions but 2 or more nodes do not communicate among
+themselves. Then the data updates  after this breakup  in connection may not get updated on all the desired nodes.
+Suppose there is break in connection between B and E . And A updates E and  Then E tries to update B as well
+since there is communication break between B and E so the data updated in E will not get updated on B unless
+it is resolved. So we can there is partition between two nodes(means no communication) . In order to make entire
+system  partition tolerant, we need to give up either on consistency or availability.How?
+
+If a system is having communication break like this, then data on E might differ from data on B.
+There may be some update on E which is not updated on B.So If A queries same thing from B then
+B will give different or outdated result will lead to data inconsistency.
+To make data consistent, after this communication break,  If A tries to access data from B we can say
+B is unavailable unless this communication break is resolved and data is in  re- sync with E.
+But now we are giving up on availability but we can maintaining consistency.
+Because there is no inconsistent reply so this network becomes partition tolerant.
+
+
+Cap Theorem say we can have either of two
+CA
+AP
+CP
+
+can't have all three together. But why?
+
+Suppose system is Consistent and Available
+So if communication breaks then then whatever update happen on one node not made to other node.
+so data will not be in sync during that time interval of communication breakdown.
+So we will lose some data. that means lose consistency . So this type of system is not partition tolerant
+
+Suppose system is Consistent and Partition Tolerant
+Suppose there is communication gap between two nodes E and B. If A writes something to E then it is supposed to be
+reflected on B.
+And If A immediately afterwards reads that same thing from B and gets outdated result, it will make entire system
+inconsistent.But how can we achieve consistency ?
+we have to give up on availability. So when A queries the same thing  from B then B don't respond. to make it consistent
+
+
+Suppose system is Available and Partition Tolerant
+On communication break b/w B and E . If A queries from B or E it may return outdated result. so make it inconsistent.
+
+
+----------------------------------------------------------------------------------------------------------------------
+
+
+
+https://www.youtube.com/watch?v=R_Fxz14tr2M
+CAP  Theorem
+
+Partition Tolerance  -
+Trade offs in  choosing database
+
+
+
+
+
+
+
+
+
+
+
