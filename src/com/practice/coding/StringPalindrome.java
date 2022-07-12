@@ -11,6 +11,8 @@ public class StringPalindrome {
 
         boolean isPalindrome = checkPalindrome(original);
         System.out.println("Is Given String : "+ original + " pallindrome : "+isPalindrome);
+
+        System.out.println(original + " is palindrome : "+checkPalindromeStartEnd(original));
     }
 
     private static boolean checkPalindrome(String original) {
@@ -23,5 +25,15 @@ public class StringPalindrome {
             return true;
         else
             return false;
+    }
+
+    private static boolean checkPalindromeStartEnd(String str){
+
+        int len = str.length();
+        for(int i = 0;i<len/2;i++){
+            if(str.charAt(i) != str.charAt(len-i-1))
+                return false;
+        }
+        return true;
     }
 }

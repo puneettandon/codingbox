@@ -18,8 +18,9 @@ public class LongestSubstringWithoutRep {
       //  System.out.println("longest substring unique using hashmap : "+ longestUniqueSubstringUsingHashMap(str));
     //    System.out.println("Longest substring prac: "+longestSubstringWithoutRepPractice1(str));
         System.out.println("Longest substring prac2: "+ longestUniqueSubstringPractice2(str));
-    }
 
+        System.out.println("Length of max longest sub string : "+longestUniqueSubstring(str));
+    }
 
     private static String longestSubstringWithoutRep(String str) {
 
@@ -115,16 +116,16 @@ public class LongestSubstringWithoutRep {
         for (char c : str.toCharArray()) {
             String current = String.valueOf(c);
 
-            System.out.println("current is: "+current);
+           System.out.println("current is: "+current);
 
             // If string already contains the character
             // Then substring after repeating character
             if (test.contains(current)) {
-                System.out.println("substring : "+test.substring(test.indexOf(current)+1));
+               System.out.println("substring : "+test.substring(test.indexOf(current)+1));
                 test = test.substring(test.indexOf(current)
                         + 1);
             }
-            test = test + String.valueOf(c);
+            test = test + c;
             System.out.println("test: "+test);
             maxLength = Math.max(test.length(), maxLength);
         }
