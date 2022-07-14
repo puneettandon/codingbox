@@ -1,0 +1,75 @@
+Distributed Cache Readme
+
+Problem Statement:
+Let's take a look at typical setup, a web application backed by a datastore.This datastore may a database or another webservice.
+A client makes a call to the web application, which in turn makes a call to the data store and result is returned back to the client.
+There may be several issues with this setup
+1. Calls to the datastore may take a long time to execute or may utilize a lot of system resources.
+It would be good to store at least some results of these calls in memory, so that these results are retrieved and returned
+back to the client much faster.
+And if the data store is down or experiences a performance degradation and calls to the data store start to fail, our
+web application may still process request as usual, at least for some period of time.
+So, storing data in memory will help to address these issues.
+When client request comes, we first check the cache and try to retrieve information from memory.And only if data is unavailable or stale,
+we  then make a call to the datastore.
+
+And why do we call it a distributed cache?
+Because amount of data is too large to be stored in memory of a single machine and we need to split the data and store it across several machines.
+
+----------------------------------------------------------------------------------------------------------
+
+Requirements
+
+Functional
+    - put(key,value)
+    - get(key)
+
+Non-Functional
+    - Scalable - scales out easily together with increasing number of (put and get) requests and be able to handle increasing amount of data we may need to
+    store in cache.
+    - High Available - survives hardware / network failure. will ensure data in the cache is not lost during hardware failures and cache is accessible in case of
+    network partitions.This will minimize number of cache misses and as a result number of calls to the datastore.
+    - High Performant - fast puts and fast gets.The whole point of cache is to be fast as it is called on every request.
+
+
+If you need to design distributed system think about the following 3 requirements first:
+Scalability, Availability and Performance
+And if data persistence is important think about durability as well
+
+-------------------------------------------------------------------------------------------------------------
+
+Start with Local Cache Design
+We start with a single server and need to implement a basic in-memory data store that has limited capacity.
+Local cache implementation is an algorithmic problem. We need to come up with data structure and an algorithm for storing and
+retrieving data.
+
+Most likely Hash table data structure comes to mind.We add key-value pairs to the hashtable and retrieve them in constant time.
+But only until the moment when we reach maximum hashtable size and cannot add any more elements.We need to evict some old data from the
+hash table before new data can be added.What data should be evicted?
+Different approaches for that.
+One of the easiest to implement is the least recently used policy, when we discard the least recently used items first.
+But hash table do not track which entry has been used recently.
+Meaning that we need one more data structure to keep track of what was used when.
+Some kind of queue, but with constant time for add, update and delete operations. - Doubly Linked List (can be used for this use case)
+
+------------------------------------------
+LRU Cache Algorithm Explanation
+
+When Get operation is called , we first check if this item is in the cache (hash table).
+If item not in cache , we return null immediately
+If item found , we need to move it to the head of the list and return the item back to the caller.
+And why do we need to move the item to the list head? To preserve the order of use.
+Item at the head of the list is the most recently used. and item at the tail of the list is the least recently used.
+So, when cache is full, and we need to free space for a new item, we remove an item at the tail of the list.
+
+When Put operation is called, we also check if item is in the cache.And if found, we update the item value and
+move the item to the head of the list.
+In case item not found, we need to check if cache is full. If cache has capacity(not full) , we simply add this item
+to the hash table and to the list(at the head position).If cache is full , we need to free some space first,
+we take an item at the tail and remove it from both the hash table and the list.
+Now we have space for new element and we add it to both hashtable and list.
+
+-------------------------------------------------------------------------------
+
+How to make it Distributed Cache
+

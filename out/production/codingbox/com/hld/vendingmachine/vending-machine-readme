@@ -1,0 +1,57 @@
+Vending Machine Readme
+
+Vending machine is generally a machine which is a kind of that we see at stations by the streets, it's a kind of
+operated by itself.It's different from any other systems where it's not you know a distributed system used by millions
+of people it's concurrently used by one person at a time and may be a few hundred two thousand people in a day
+
+Requirements for vending machine
+1. Ability to select an item
+2. Ability to pay for an item ( cash payments )
+3. Dispense the item
+4. Notify the owner (servicing agent) about inventory status
+
+Flow chart/ State Diagrams to figure out what are the different life cycles that an item can go through
+vending-machine-flowchart.png
+
+Vending Machine High Level Architecture
+
+- There will be different components
+- User
+- Item Selection module - So this component has mapping of an item to a number so in most vending machines you can think of it
+as it's a two by two matrix or m * n matrix where every row and every column has item associated with it so this kind of
+component has that mapping stored in it.So basically when you select an item it knows which item you are talking about.
+- Payment module -  Here we have only cash system.So essentially the idea of this system is taking in the change calculating whether
+users have given the right amount of money or not. If there is money to be dispensed out change it will dispense out that change
+so essentially
+- Dispensing item module - when an item is selected it will kind of make those physical mechanical movements to be able to dispense of that item out to the user.
+
+- When something in stock - user will key in the location of the item so basically row and a column combination. once that happens
+the item selection knows what item it is correspondingly what is the price of that item. The payment system then kind of takes in the money
+and the item selection system has told the payment system what is the value of the item the payment system then calculates the money that's
+has been given if there is any change that needs to be dispensed  out it will dispense out of that change to the user.
+once that is successfully completed it triggers a notification or some of kind of a relay to the dispensing system which will then make those physical
+movements to dispense of the item
+
+- when something is out of stock -Typically any vending machine has a glass door to it if something is out of stock user generally knows that item
+is not there but let's say that if user keys in through the keypad the coordinates of the item that are out of stock the item selection system kind of
+has that count of inventory as well whether that item which is keyed in is valid or not and in case if it is out of stock  it would respond back to
+user with an error saying that this item is not available
+
+- In case user underpays - Payment system is aware of that the amount is . so it will wait for that amount to come in . so we could have timeout
+or time interval running where from the time the item is selected to certain amount of time. This time user needs to enter the correct amount
+to the system. If in that duration the user does not enter the whole amount , basically system would cancel the transaction , return the money
+back and kind of go back to its original or ready state.
+
+- In case user overpays - System would count the money , it will then calculate that the dispensing system here calculates the difference what it needs
+to dispense out and along with difference it also calculates which currencies or which combinations of coins and notes it needs to dispense out to
+the user and kind of notification give to payment system to do that.
+
+- In case system cannot give change - couple of options -1. Cancel the transaction and just give everything back to the user without dispensing the item
+    giving an error not enough change
+    2. Can ask user to give different denomination of currency so that it can re-calculate the difference
+    3. Reducing the price of an item to the next available change it has
+
+- Can add notification system , in case items running low on items/out of stock/  or change not available. (in case of refilling )
+
+- In case of credit card transaction - payment system needs to connected to payment gateway. Give user ability to insert that transaction that system can read credit card information and
+payment system passes this information to your payment gateway which would then be able to trigger payment
