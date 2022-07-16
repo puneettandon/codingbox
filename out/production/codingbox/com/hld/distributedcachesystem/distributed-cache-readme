@@ -73,3 +73,107 @@ Now we have space for new element and we add it to both hashtable and list.
 
 How to make it Distributed Cache
 
+We can start with a really straightforward idea, when we move the least recently used cache we just implemented to its own host.
+The benefit of this, we can now make each host to store only chunk of data, called shard. Because data is split across several hosts,
+we now can store much more data in memory.Service hosts know about all shards , and they forward put and get requests to a particular
+shard.
+The same idea, but slightly different realization, is to use service hosts for the cache.we run cache as a separate process on service host.
+And data is split into shards. And similar to the first option, when service needs to make a call to the cache , it picks the shard that
+stores data and makes a call.
+Let's call these options as Dedicated Cache Cluster and Co-located Cache.And take a look at the benefit of each option.
+
+Dedicated cache cluster helps to isolate cache resources from the service resources.Both the cache and service do not share memory and CPU anymore.And can
+scale own their own.Can be used by multiple services.And we can utilize the same cluster across several microservices our team owns.Gives Flexibility in
+choosing hardware.We can choose hardware hosts with lot of memory and high network bandwidth.Public cloud nowadays provide a variety of memory
+optimized hardware.
+
+For Co-located cache, the biggest benefit is that we do not need a separate cluster.This helps to save on hardware cost and usually less operationally
+intensive than a separate cluster.And with Co-location,both the service and the cache scale out at the same time.We just add more hosts to the service
+cluster when needed.
+
+Ok, we have implemented a LRU cache and made it runnable as a separated process, we told cache clients to call the cache process using either
+TCP or UDP connection.But how do cache clients decide which cache shard to call?
+
+Start with naive approach  -
+
+A MOD function
+Based on the item key and some hash function. we compute a hash. we divide this hash number by a number of available cache hosts.and take a reminder.
+we treat this remainder as an index in the array of cache hosts.
+For example we have 3 cache hosts.And hash is equal to 8. 8 Mod 3 is 2, So  the cache host with index 2 will be selected by the service to store this
+item in the cache and while retrieving the item from the cache.
+But what happens when we add a new cache hosts(or some host dies due to hardware failures) ?
+The MOD function will start to produce completely different results.Service hosts will start choosing completely different cache hosts than they did
+previously, resulting in a high percentage of cache misses.This is rarely acceptable in production system and usually used for testing purposes only.
+
+A much better option is to use consistent hashing.
+Consistent Hashing - is based on mapping each object to a point on a circle.We pick an arbitrary point on this circle and assign a 0 number to it.
+We move clockwise along the circle and assign values.We then take a list of cache hosts and calculate a hash for each host based on a host identifier.
+for example - IPAddress or name.The hash value tells us where on the consistent hashing circle that host lives.And the reason we do all that , is that
+we want to assign a list of hash ranges which cache host owns.Specifically, each host will own all the cache items that live between this host and
+the nearest clockwise neighbor.It can be counter clockwise,not matter much.So, for a particular item, when we need to look up what cache host
+stores it, we calculate a hash and move backwards to identify the host.In this case , host 4 is storing the item.And what happens when we add
+new host to the cache cluster? Same as before , we calculate a hash for a new host, and this new host becomes responsible for this own range of
+keys on circle.While its counter clockwise neighbor(host 4 in this case) becomes responsible for a smaller range.In other words, host 6 took responsibility
+for a subset of what was formerly owned by host 4.And nothing has changed for all other hosts. which is exactly what we wanted , to minimize
+a number of keys we need to re-hash.
+Consistent hashing is much better than MOD hashing, as significantly smaller fraction of keys is re-hashed when new host is added or some host is removed
+from the cache cluster.Now we know how cache cluster host is selected for both put and get , but who is actually doing this selection?
+On the service side, who is responsible for running all these hash calculations and routing requests to the selected cache host?
+
+---------------------------------------------------------------------------------
+
+Cache client is that component.It's a small and lightweight library, that is integrated with the service code and is responsible for the cache host
+selection.Cache client knows about all cache servers.And all clients should have the same list.Otherwise, different clients will have their own view
+of the consistent hashing circle and the same key may be routed to different cache hosts.Client stores list of cache hosts in sorted order(for a fast
+host lookup) and binary search can be used to find a cache server that owns the key.Cache client talks to cache hosts using TCP or UDP protocol.
+And if cache host is unavailable, client proceeds as though it was a cache miss.
+As you may see, list of cache hosts is the most important knowledge for clients.And what we need to understand, is how this list is created, maintained
+and shared among all the clients.
+
+--------------------------------------------------------------------------------------
+
+Maintaining a list of cache servers
+
+In first option, we store a list of cache hosts in file and deploy this file to service hosts using some continuous deployment pipeline.
+we can use configuration management tools such as chef and puppet  to deploy file to every service host.(Simplest option)
+But not very flexible.Everytime list changes we need to make a code change and deploy it out every service.
+
+What if we keep the file, but simplify the deployment process ?
+Specifically we may put the file to the shared storage and make service hosts poll for the file periodically.
+All service hosts try to retrieve the file from some common location, for example , S3 storage service.
+To implement this option , we may introduce a daemon process that runs on each service host and polls data from the storage once a minute or several minutes.
+Drawback - we still need to maintain the file manually. Make changes and deploy it the shared storage every time cache host die or new host is added.
+It would be great if we could somehow monitor cache server health and if something bad happens to the cache server, all service hosts are notified
+and stop sending any requests to  the unavailable cache server.And if new cache server is added , all service hosts are also notified and
+start sending request to it.
+
+Third option -
+To implement this approach, we will need a new service, configuration service, whose purpose is to discover cache hosts and monitor their health.
+Each cache server register itself with configuration service and sends heartbeats to the configuration service periodically.As long as heartbeats come,
+server is keep registered in the system.If heartbeat stop coming,the configuration service unregisters a cache server that is no longer alive or
+inaccessible.And every cache client grabs the list of registered cache servers from the configuration service.
+The third option is the hardest from implementation standpoint and its operational cost is higher.But it helps to fully automate the list of maintenance.
+
+-----------------------------------------------------------------------------------
+
+Summary:-
+To store more data in  memory we partition data into shards.and put each shard on its own server.Every cache client knows about all cache shards.
+And cache client uses consistent hashing algorithm to pick a shard for storing and retrieving a particular cache key.
+
+---------------------------------------------------------------------------
+
+Have we built a highly performant cache? Yes
+Least Recently Used cache implementation uses constant time operations.Cache client picks cache server in log n time, very fast.And connection between
+cache client and cache server is done over TCP or UDP, also fast.So performance is there.
+
+What about scalability and availability?
+Scalability is also there.We can easily create more shards and have more data stored in memory.Although those of you who did data sharding in real system
+know that common problem for shards is that some of them may become hot meaning that some shards process much more requests than their peers.Resulting in
+bottleneck.And adding more cache servers may not be more effective.With consistent hashing in place , a new cache server will further split some shard
+into two smaller shards.But we do not want to split any shard, we need to split a very concrete one.
+And high availability is not there at all.  If some shards dies or becomes unavailable due to network partition, all cache data for that shard is lost and
+all requests to that shard will result in a cache miss, until keys are re-hashed.
+
+Mechanism to achieve better availability and better deal with hot shard problem ?
+Data Replication
+There are many different techniques for data replication.We can distinguish two categories of data replication protocols.
