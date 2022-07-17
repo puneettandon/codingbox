@@ -1,0 +1,5 @@
+Insertion Sort
+
+Does not provide any useful intermediate result like bubble sort which provides largest element on pass.
+
+Insertion sort useful for linked list.

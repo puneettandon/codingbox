@@ -1,0 +1,48 @@
+Notification Service Readme
+
+Design a Notification Service that is scalable enough.
+This is never a stand alone system but this is always embedded in some other system design.
+
+------------------------------------Functional Requirements-----------------------------------------
+- Send Notifications
+
+- Pluggable - means - So let's say we want to support SMS and email as one form of notification.
+If I want to support In-App notifications as well.So it should be easy enough to add that.It can be further extended to a lot of kinds of notifications.
+for example - whatsapp notification or anything of that sort.So, extendability should be taken care of.
+
+- SaaS Product - why? - Because the main idea is you should know who is sending what number of notifications.And it should be possible for you to rate limit.
+There are two uses cases where you will need that. So rate limiting as a offering you will need, if you are giving out to other companies as a product to use.
+But even internally, you would need to do some kind of rate limiting.Let's just its being used by a company like Amazon.
+Now there are multiple business verticals.If all of them send you notifications, then you will end up getting hundreds of notifications in a day.So that's
+a very bad user experience.So notification system should be able to overall put a rate limit across all the users across all the platforms saying a
+particular user should not get more than five notifications in a day.There could be certain amount of classifications done.So there are two kinds of
+notifications - one is a transactional notification saying you have made an order, this much amount of money has been deducted from your account, something
+of that sort.(So these are ok to get).But promotional notification should always have a rate limit.So If you are building for within your company,
+then you will build a user level rate limiting.But If you are giving it out externally to other companies as a product, then you might want to put a rate limiting
+saying how many requests can you make for this server or may be make billing tiers and price them accordingly.
+
+- Prioritization - we will support multiple priorities of messages.Some messages are low priority and certain messages are of high priority.Let's say if you are
+sending a one time password(OTP), then that's a very high priority message.why? Because if the user would not get that SMS or email or anything, then they
+would not log into your platform and they will not do the transaction that they want to do.But if it's a promotional message , it is okay if it's low
+priority and if it gets delayed, if it goes to the user let's say half an hour late also, it doesn't really matter. Process high priority then low priority.
+
+
+
+--------------------------------------Non Functional Requirements-----------------------------------------------
+
+- High Availability - why? - Because if you are planning to build it as a SaaS product which can be used by other companies, then down time would really cost
+us a lot.
+- Many Clients - Should be built in a way that it's easy enough to add more clients.and whenever we want, we should be able to attribute saying how many
+clients have made us how many number of requests.
+
+--------------------------------------------------------------------------------------------------------------------
+
+
+                                    Architecture of Notification Service
+
+If you are building it for a small enough use case like let's just say if you want to send out some email notifications to some customers, given
+some criteria you can build all of this as one deployable service and put all the logic in one place.
+
+But want to build it as SaaS product.follow this architecture
+
+
