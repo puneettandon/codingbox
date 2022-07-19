@@ -113,87 +113,8 @@ what is that user 123?It's something that you can search from user service to ge
 This basically could handle one more kind of rate limiting. A user might say that don't send me more than 3 promotional messages in a week or one promotional
 message in a week.So,If that kind of a rate limiting also exists and want to support that ,then this whole rate limiting module would come after this
 notification handler.But, this Rate is a very light thing and Notification is heavy as it calls DB, calls an external service.That's the reason I have
-kept it after the Rate Limiter.
+kept    it after the Rate Limiter.
 
------------------------------------------------------------------------------------
 
-Once we have all of this finalized, we basically have a full fledged system that we can actually use to notify. we have a phone number. we know that we will
-send it as a SMS and we have the content or we have the email id,we know we will send it as an email and we have the content.All of that is put into another
-kafka for basically sending it out.
-Why do we need so many kafka's ?
-Because let's just say we had a lot of SMSes and this SMS Handler service is not able to handle it. One way is to increase the number of consumers.
-But if there are certain spikes in certain clients, it's probably not worth to add a hardware for all the time for that.So we might as well put into
-kafka and this SMS handler could handle things at it's own pace.
-There are multiple handlers that sits on top of this kafka. You could decide to build all of these as one deployable unit, but again , with SaaS(Software
-as a service) thing in mind, will rather keep that as a separated service in each of them.
-So all the SMS requests that will come into this kafka would be handled by this SMS Handler.Plus, there could be different topics for each of these handlers.
-So email could have topic,SMS could have one topic and stuff like that.
-Now SMS Handler might integrate with multiple vendors for sending SMSes.
-Let's say you are global company.You have one vendor that deals with SMSes in asia, other vendor that deals with SMSes in USA,another vendor for Europe like that.
-So you could have multiple vendors that you are integrated with and all the SMS vendor integration could be done through this SMS Handler.
-Now ,let's say if are in India and you have 5 vendors that works in India. So what request should go to which vendor? what is the priority ? How do we distribute
-request amongst them?That piece could also be handled within this SMS Handler.Same things you can do  for emails.
-Communication b/w handler and Vendor could be sync call.
------------------------------------------
-Email Handler takes all the email requests and calls the email vendor which will send out the real emails.This email vendor could be a simple SMTP
-server that you have at your end.
------------------------------------
-Then you will have In-App handler, which basically handles all the in-app notifications that want to send out or a push notification, kind of thing.
-You can use firebase for android and use apple push notification service for ios platforms.
----------------------------------------------
-You can also have IVRs handler.Suppose Amazon or flipkart uses them. When you place a high value cash on delivery order , they actually send you an IVRs call
-saying that we have got this order from you , are you sure you have kept this as a cash on delivery order and you can press 1 or 2 to confirm or reject.
-This IVRs is a very low throughput scenario and it would happen once in a while compared to sms or email.
-You can scale these independently based on the kind of traffic you have.
--------------------------------------------------------------------------------------------------
 
-Now for Pluggability -
-If somebody comes and says that you need to add whatsapp also as a notification mechanism.
-So basically you just need to add whatsapp handler and basically introduce a type called whatsapp messaging at notification service layer and all of that
-can flow through all the way .final kafka will have new topic for whatsapp messages and whatsapp handler will take care to sending notifications.
 
----------------------------------------------------------------------------------------------------
-
-                        Notification Tracker
-
-You always need to keep track of what all notifications you have sent.In case somebody sues you or there is some auditing required , you need to know what all the
-communication you have sent out.So for all of that , you have notification tracker which puts all the notifications that you sent out in its own cassandra.
-This is normally a write only thing, which would be read once in a while when there is audit or anything.
---------------------------------------------------------------------------------------------
-
-Depending upon traffic and your throughput, you could decide to club some of these components. Can club all handlers together as a single deployable unit.
-club rate limiter and user preferences together . can club notification service and notification validator together. this way we can reduce components if it is
-very low throughput thing.
-
---------------------------------------------------------------------------------------------
-
-Bulk Notifications
-
-What if you want to do something like, for all the users who have ordered a TV in last 24 hours, send them a notification like installation service.
-or for all the users who had ordered milk 3 days back, send them notification that whether you want to order it again or not?
-These come under bulk notification.
-So there would be bulk notification UI, which will call bulk notification service, which takes a filter criteria(like mentioned above) and
-a notification(text or anything ) and sends it out.
-So there is something called User transaction Data. This basically abstracts out a lot of services which are outside the scope of notification service.
-For example - In Amazon, there are couple of services that handle their e-commerce orders. couple of services that handle pantry services.All of those services
-putting their transactional information - that your order has been placed , it has been delivered , it has been canceled all of those kind of attributes
-into various kafka topics. What we could do is basically build a search functionality on top of these topics.Normally in most companies , you do have those
-kind of products already built.But assuming you don't have that let's try to build that.And if we have that just leverage that.
-User Transaction Data will put data into lot of kafka's lot of topics. we are abstracting this as one kafka.All of those information would be listened by
-something called as Transaction Data Parser.
-Transaction Data Parser parses all of that information.Now because you have multiple clients and multiple services who are sending data, there could be
-putting  in multiple formats of json or xml.so for example - Amazon, could have separate signature and regular ecommerce could have a separate signature.
-This data parser basically takes all of those messages ,put it a format or converts it in a format that it understands and then it puts it into its own datastore.
-It could be elastic search or mongodb where you do complicated aggregations and nested queries.
-On top of this datastore, there is something called as Query Engine.That query engine basically takes a query which could be like an aggregation + filter , saying
-find out all the users who are in bangalore , who have ordered some food item in last few days, or find out all the people who are having some items
-in their cart but have not placed the ordered or any kind of filter criteria. It would be powered by Query engine. Query Engine would have it's own
-DSL(Domain Specific Language) would be a format how do you kind of structure  your query and that would be a signature that it exposes.
-Now, this query engine would query that thing on this data store.Now, this query engine would query that thing on this data store.So it also understands the
-schema of this datastore and it basically would return us a list of users that match that criteria.
-Now this bulk notification service has a list of users that it has got from query engine,it has message it got from UI, it basically calls this notification
-service saying send this notification to all of these users and these users, it would get from this query engine.
-This Query engine is not something which would be just used by this notification service.It could be used lot of other services as well.
-You could have a very simple rule engine which possibly says that if user has canceled 10 consecutive orders in last 3 days , go deactivate their account.
-They are probably doing fraud. or Could be simple fraud engine which has some criteria and take action basis on that.All these conditions and actions kind of
-thing, wherever you have a condition running and action happening , all those kind of those would be powered by this other consumers engine.

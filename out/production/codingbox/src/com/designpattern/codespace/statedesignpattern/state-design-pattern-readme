@@ -1,0 +1,4 @@
+State Design Pattern Readme
+
+State Design Pattern can be used when we want to change the behavior of an object depending on some internal state like
+depending on the current state of the mobile.phone may either ring or vibrate.
